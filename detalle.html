@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalle Persona</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #244577;
+            margin: 0;
+        }
+
+        .volver {
+            margin: 20px;
+        }
+
+        .volver button{
+            padding: 8px 14px;
+            background: #1c7cbc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .volver button:hover{
+            background:#145a8a;
+        }
+
+        .card {
+            background: #eeeaea;
+            margin: 50px auto;
+            padding: 30px;
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1c7cbc;
+        }
+
+        .info {
+            text-align: left;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .info p {
+            margin: 8px 0;
+        }
+
+        .pdfs {
+            margin-top: 25px;
+        }
+
+        a {
+         display: block;
+         margin: 8px 0;
+         padding: 10px;
+         background: #1c7cbc;
+         color: white;
+         text-decoration: none;
+         border-radius: 6px;
+         text-align: center;
+         transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        a:hover {
+         background: #145a8a;
+         transform: scale(1.05);
+         box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="volver">
+<button onclick="volver()">← Volver a Personas</button>
+</div>
+
+<div class="card" id="detalle"></div>
+
+<script>
+
+function volver(){
+    window.location.href="index.html";
+}
+
+function getID(){
+    const params = new URLSearchParams(window.location.search);
+    return params.get("id");
+}
+
+fetch("datos.json")
+.then(res => res.json())
+.then(data => {
+
+      let id = getID();
+     let persona = data.find(p => p.id == id);
+
+     let diasMostrar = persona.dias;
+
+     if (persona.dias === "INDEFINIDO") {
+        diasMostrar = "∞";
+    }
+    let nombres = {
+        ci: "Ver CI (PDF CI)",
+        contrato: "Ver Contrato (PDF CT)",
+        psi: "Ver PSI (PDF PSI)",
+        lc: "Ver Licencia (PDF LC)",
+        informe: "Ver Informe (PDF INFORME)"
+    };
+
+    let html = `
+        <h2>${persona.nombre}</h2>
+
+        <div class="info">
+            <p><b>RUT:</b> ${persona.rut}</p>
+            <p><b>Tipo:</b> ${persona.tipo}</p>
+            <p><b>Días Vencimiento de contrato:</b> ${diasMostrar}</p>
+            <p><b>Cumpleaños:</b> ${persona.cumple}</p>
+            <p><b>Días Para Su Cumpleaños:</b> ${persona.dias_cumple} días</p>
+        </div>
+
+        <hr>
+
+        <div class="pdfs">
+            <h3>Documentos</h3>
+    `;
+
+    for (let key in persona.pdfs){
+        let link = persona.pdfs[key];
+
+        if (link){
+            html += `<a href="${link}" target="_blank">${nombres[key]}</a>`;
+        }
+    }
+
+    html += `</div>`;
+
+    document.getElementById("detalle").innerHTML = html;
+
+});
+
+</script>
+
+</body>
+</html>

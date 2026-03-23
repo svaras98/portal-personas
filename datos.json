@@ -1,0 +1,410 @@
+[
+    {
+        "id": 2,
+        "nombre": "ALEX SOLIZ ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "17.656.809-7",
+        "cumple": "05/12/1991",
+        "dias_cumple": 256,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/15ZGJJtFPfzLg13xMD9nsN8OdjwVgraI1/view",
+            "contrato": "https://drive.google.com/file/d/1zFUg9yyf_a1p30lwy9_Gidh935-O74kG/view",
+            "psi": "",
+            "lc": "https://drive.google.com/file/d/1o6eVcxEM2HqoFTOisZEUAIZSdDFF9R_W/view",
+            "informe": "https://drive.google.com/file/d/1rOQOzE_jwY1WRIZ_i8Y-iFPhyUBOkP5w/view"
+        }
+    },
+    {
+        "id": 3,
+        "nombre": "ALEXANDER FLORES ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "28.801.027-7",
+        "cumple": "30/12/2001",
+        "dias_cumple": 281,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1XlIzUDW-Z7EnsSSOYX8pbHiQnjASHAm2/view",
+            "contrato": "https://drive.google.com/file/d/1qwhSBk4ve9-tyFXZkg7GdjYsMVfk6EjS/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1WF1_zAQ64ZDs2f84G3YSz7KRQQ5QSg_b/view"
+        }
+    },
+    {
+        "id": 4,
+        "nombre": "ANAHI QUISPE ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "19.253.166-7",
+        "cumple": "07/06/1994",
+        "dias_cumple": 75,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/159fQehyuaWYlwTVaqXNB4kYs1B7ej2Pv/view",
+            "contrato": "https://drive.google.com/file/d/1wuNsp_PVTY0OVVilEcVyhmc33rHsDp2z/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1Da-hEn0uLn67DZwePW0ho4kdwn63GW5L/view"
+        }
+    },
+    {
+        "id": 5,
+        "nombre": "ARCENIO OCHOA ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "23.518.679-9",
+        "cumple": "01/01/1974",
+        "dias_cumple": 283,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1bZDdgxr-hCS0BSmi7IcAUIvT3GqvBmcO/view",
+            "contrato": "https://drive.google.com/file/d/1-KWYWQX7bWHOPxw01w1QQIvIhxM0ISUb/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1Q5GeN_ACGMK3KHQ1QYXOo2ZywM_Wbzr7/view"
+        }
+    },
+    {
+        "id": 6,
+        "nombre": "BRAYAN  CESPEDES",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "25.288.579-K",
+        "cumple": "21/04/2004",
+        "dias_cumple": 28,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1JnO_s6CWShNxR1z6E0aOI4e_ELyZpYP2/view",
+            "contrato": "https://drive.google.com/file/d/1U3046ZqbpTRIIDOsp1ArmIqVcmwZ2suY/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1dRSlKdMbfmxzLEzMvH_ephx2GY_7cBe3/view"
+        }
+    },
+    {
+        "id": 7,
+        "nombre": "CRISTIAN MOLINA ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "14.037.587-K",
+        "cumple": "19/05/1981",
+        "dias_cumple": 56,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/19yJlyvjclDvDvR08MtLJTZOdfLW0jHRw/view",
+            "contrato": "https://drive.google.com/file/d/1vzbozfEMEcVG0VG6YvoXC7xMAM3f9EWy/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1ZqiPCE5buct2-Kl6KP4ZhzJyrtE6bNWg/view"
+        }
+    },
+    {
+        "id": 8,
+        "nombre": "DANT ALDUNATE ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "28.856.144-3",
+        "cumple": "25/08/1991",
+        "dias_cumple": 154,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1DcBQk_ururexJu2szSnVwJub2XrKjUh0/view",
+            "contrato": "https://drive.google.com/file/d/1yM3xSft0-m2VYNvB6VVLkHuIhU4MeI1v/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1A9kM7kq2wfNBFtB39qwcWyzXow-Q1ShA/view"
+        }
+    },
+    {
+        "id": 9,
+        "nombre": "GUILLERMO MARDONES ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "13.268.918-0",
+        "cumple": "05/11/1977",
+        "dias_cumple": 226,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1QiG62a3drsLIawg2jLKGIX6VgW_9ZCnN/view",
+            "contrato": "https://drive.google.com/file/d/1RPbs3tYu_ZqZLM5hLpQKB8W7cAeu7Y7A/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1c0Tya6EpyPhUVLGQ-9n_wzPq3ST7jF-w/view"
+        }
+    },
+    {
+        "id": 10,
+        "nombre": "JERSON ALVAREZ ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "19.325.015-7",
+        "cumple": "04/04/1996",
+        "dias_cumple": 11,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1ZSzTo5iQV3r1e3mJ1r-LyDxcP9cC2eZH/view",
+            "contrato": "https://drive.google.com/file/d/1cithU7DSiXCtjffg5IudQraRIvoGPrJX/view",
+            "psi": "https://drive.google.com/file/d/1wucw9hGEoCZTP7CC2hmAgKHy_ZtX2SyM/view",
+            "lc": "https://drive.google.com/file/d/1tAq2-GuQRe3q9JtRqIEU346h8ETGDJ1Q/view",
+            "informe": "https://drive.google.com/file/d/1wLN03eSYLGi2_qG7Y7kH1Z3FmNTYo9Ke/view"
+        }
+    },
+    {
+        "id": 11,
+        "nombre": "JESUS DELGADO ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "20.386.036-6",
+        "cumple": "19/10/2000",
+        "dias_cumple": 209,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1JAUqqptwuh2n1TBs8RW4mbr-yW3pQBmk/view",
+            "contrato": "https://drive.google.com/file/d/1S4JNLdy6njQMDYxfoTH9NPb8Q5WggAFB/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1w2bvgDVs-6PY3y-KIlh1kUo2ZFemvPNR/view"
+        }
+    },
+    {
+        "id": 12,
+        "nombre": "JHONN CUELLO ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "19.551.779-7",
+        "cumple": "02/11/1983",
+        "dias_cumple": 223,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1k-VB8XfU2tKr6JYtU-wHQtV5dlYzMXFN/view",
+            "contrato": "https://drive.google.com/file/d/1wRROqGUUL4odFvgnoI3JrWijWCsVtQem/view",
+            "psi": "https://drive.google.com/file/d/1KdRaybY-ybMK5iKpTJEtCebLhXUz9Dd3/view",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1x2Q3x4qCHa3a4mj_EkQvGWJRuVN6eqkk/view"
+        }
+    },
+    {
+        "id": 13,
+        "nombre": "JOSE CALCINA ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "28.644.597-7",
+        "cumple": "28/04/2003",
+        "dias_cumple": 35,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1heWLvWCR5X8S4tU4ZZSGmPPCqlnvuXF5/view",
+            "contrato": "https://drive.google.com/file/d/1H6yPixTX07CQsN6I6Wvre39uTip9ObHD/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1wwsegi8kAmbql7WpGUJL5bIk_-tEoc3p/view"
+        }
+    },
+    {
+        "id": 14,
+        "nombre": "KEN FORD ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "27.400.434-7",
+        "cumple": "14/01/1995",
+        "dias_cumple": 296,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/127pxniffEjRY3ceTRWghzaN22H66mEUa/view",
+            "contrato": "https://drive.google.com/file/d/1VGPIYTL3O9FsHx2H0zPdbdPJ0ZVADnJp/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/10C7h5oh7DdtAVNF1zKzhUzCA5LzDIb7x/view"
+        }
+    },
+    {
+        "id": 15,
+        "nombre": "LECTER GOMEZ ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "14.595.353-7",
+        "cumple": "20/06/1979",
+        "dias_cumple": 88,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1gQpfnlnaCz0f50AcjOFfKts7WHL6sXWF/view",
+            "contrato": "https://drive.google.com/file/d/1QX7fFPdGjm2Loa1zJ2XkwnQn7-GQTh2i/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1rgTYMojoNajMj-WIooTOagTJQjR3BLgc/view"
+        }
+    },
+    {
+        "id": 16,
+        "nombre": "LUIS ALOR ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "23.600.397-3",
+        "cumple": "20/04/1987",
+        "dias_cumple": 27,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/168xt_IKzqlAIBzqAIpdW8AMww5GMKtKP/view",
+            "contrato": "https://drive.google.com/file/d/1oYFduOrjx12rDLLUNnqhyU183_3sYMbF/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1yOWIs81om8y52SEWD-TPCshkhvU2usTM/view"
+        }
+    },
+    {
+        "id": 17,
+        "nombre": "MARCELO PANIAGUA ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "17.655.973-K",
+        "cumple": "02/05/1991",
+        "dias_cumple": 39,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/10SLxGDLu4qnvmYqksTGr_OKrZuE9PgZm/view",
+            "contrato": "https://drive.google.com/file/d/1M0XKb_Z-MMBWz19XVSmKJB9YT5RM8WOw/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1o6N34pPdiefcVkHlFel1wt5UJWPIsIvy/view"
+        }
+    },
+    {
+        "id": 18,
+        "nombre": "MARCOS DIAZ ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "11.930.770-8",
+        "cumple": "04/02/1972",
+        "dias_cumple": 317,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1Skh4QIeQIbwxax1Zb9Lrnn3ioT7aqMK2/view",
+            "contrato": "https://drive.google.com/file/d/1CoMlg7H7zi2bZiIgsQIvunixYocPuOWT/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1tT-Pk-YjHxe7-4IfyMr57AQCD8GKWgcj/view"
+        }
+    },
+    {
+        "id": 19,
+        "nombre": "ROBINSON DELGADO ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "11.704.707-5",
+        "cumple": "01/07/1971",
+        "dias_cumple": 99,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1MqVtMIQBalP494kF7CtxHAPE0IleojiU/view",
+            "contrato": "https://drive.google.com/file/d/1ebyOvOE5oUa-zGqWQVgO8mnBnTMLt7Hs/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/17wsyZ5FSk8nGGzL34xHEYAK8nnyFOVGP/view"
+        }
+    },
+    {
+        "id": 20,
+        "nombre": "RODRIGO FIERRO",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "18.824.739-3",
+        "cumple": "31/12/1994",
+        "dias_cumple": 282,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1TpkomdyB0bZxpwAO8CJ1DaGDfUeU2Wg9/view",
+            "contrato": "https://drive.google.com/file/d/1QLJADM43iyxIy9hFoz_qPbHxptYYtLDK/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1OiKRtU_jOzYOwLzLkNfFDptd34lX2aAD/view"
+        }
+    },
+    {
+        "id": 21,
+        "nombre": "SANDRA DELGADO ",
+        "tipo": "TRANSITORIO",
+        "dias": 8,
+        "fecha_termino": "31-03-2026",
+        "rut": "13.588.575-4",
+        "cumple": "07/09/1969",
+        "dias_cumple": 167,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1dvydOsc0PUpLNXtXBWqZ_ozAeRfpnTQD/view",
+            "contrato": "https://drive.google.com/file/d/1q0ZUvafOw79wYuDvhA4istEWHpmM9Vs3/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/1cV81-SWb_SlQQi0L0cycOfcp0_d3PhE9/view"
+        }
+    },
+    {
+        "id": 22,
+        "nombre": "SIMON VARAS ",
+        "tipo": "TRANSITORIO",
+        "dias": 10,
+        "fecha_termino": "02-04-2026",
+        "rut": "20.905.239-3",
+        "cumple": "27/10/2001",
+        "dias_cumple": 217,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1YVeMDZvhSx3ZmP0F4HRy_Ty58OKmZAEH/view",
+            "contrato": "https://drive.google.com/file/d/11ij58Kv60sI37XJi7kMEyQrFVKdNfoby/view",
+            "psi": "",
+            "lc": "",
+            "informe": "https://drive.google.com/file/d/19__8zYjAGs0Z6wI3lg_IErqjbS0Mvu53/view"
+        }
+    },
+    {
+        "id": 23,
+        "nombre": "JORGE CONDORI",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "28.942.670-1",
+        "cumple": "27/06/1994",
+        "dias_cumple": 95,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1Z7kkCNdOeDOFFvb-vqN-1sQwEpFMkj60/view",
+            "contrato": "",
+            "psi": "",
+            "lc": "",
+            "informe": ""
+        }
+    },
+    {
+        "id": 24,
+        "nombre": "ANGIE GONZALEZ",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "26.518.584-3",
+        "cumple": "30/09/1998",
+        "dias_cumple": 190,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1HhfPW-d4E-5iqM0yL_Eg_K7jZhGtfEB0/view",
+            "contrato": "https://drive.google.com/file/d/1noc8S9CKLaoGrYQl4B3TQ50Q1cFFc5ng/view",
+            "psi": "",
+            "lc": "",
+            "informe": ""
+        }
+    },
+    {
+        "id": 25,
+        "nombre": "LUIS PINEDO",
+        "tipo": "INDEFINIDO",
+        "dias": "INDEFINIDO",
+        "fecha_termino": "∞",
+        "rut": "29.151.061-2",
+        "cumple": "10/03/2008",
+        "dias_cumple": 351,
+        "pdfs": {
+            "ci": "https://drive.google.com/file/d/1EFOjkUZ08hH5u2h-Q3qDxgPgEtJCpMhG/view",
+            "contrato": "",
+            "psi": "",
+            "lc": "",
+            "informe": ""
+        }
+    }
+]

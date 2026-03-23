@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Login</title>
+
+```
+<!-- ICONOS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+```
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background: linear-gradient(to bottom, #081a2f, #0f3c5c, #3c8db8);
+}
+
+.box{
+background:#e4ece7;
+padding:30px;
+border-radius:10px;
+width:300px;
+text-align:center;
+}
+
+.logo{
+width:200px;
+margin-bottom:20px;
+}
+
+.tituloPortal{
+font-size:16px;
+color:#1f3c88;
+margin-top:-10px;
+margin-bottom:10px;
+letter-spacing:1px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+box-sizing:border-box;
+border:none;
+border-radius:5px;
+}
+
+/* evitar que el checkbox use width 100% */
+input[type="checkbox"]{
+width:auto;
+margin-right:6px;
+}
+
+/* contenedor contraseña */
+.password-container{
+position:relative;
+}
+
+.password-container input{
+padding-right:40px;
+}
+
+.eye{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+color:#888;
+}
+
+/* checkbox recordar */
+.recordar{
+font-size:14px;
+display:flex;
+align-items:center;
+justify-content:flex-start;
+margin-top:5px;
+margin-bottom:10px;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#3b82f6;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:5px;
+}
+
+button:hover{
+background:#2563eb;
+}
+
+.error{
+background:#dc2626;
+padding:10px;
+margin-bottom:10px;
+border-radius:5px;
+font-size:14px;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<img src="/static/Cold_control.png" class="logo">
+
+<div class="tituloPortal">Portal de Personas</div>
+
+<h2>Iniciar Sesión</h2>
+
+<div id="error" class="error" style="display:none;">
+Usuario o contraseña incorrectos
+</div>
+
+<form method="POST">
+
+<input type="text" name="usuario" placeholder="Correo" required>
+
+<div class="password-container">
+<input type="password" id="password" name="password" placeholder="Contraseña" required>
+<i class="fa-solid fa-eye eye" onclick="togglePassword()"></i>
+</div>
+
+<label class="recordar">
+<input type="checkbox" name="recordar">
+Mantener sesión en este dispositivo
+</label>
+
+<button>Entrar</button>
+
+</form>
+
+</div>
+
+<script>
+
+// Mostrar error
+const params = new URLSearchParams(window.location.search)
+
+if (params.get("error") === "1"){
+document.getElementById("error").style.display="block"
+}
+
+// Mostrar / ocultar contraseña
+function togglePassword(){
+
+const pass=document.getElementById("password")
+const icon=document.querySelector(".eye")
+
+if(pass.type==="password"){
+pass.type="text"
+icon.classList.remove("fa-eye")
+icon.classList.add("fa-eye-slash")
+}else{
+pass.type="password"
+icon.classList.remove("fa-eye-slash")
+icon.classList.add("fa-eye")
+}
+
+}
+
+</script>
+
+</body>
+</html>
