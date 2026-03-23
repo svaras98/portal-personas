@@ -51,3 +51,4 @@ uritemplate==4.2.0
 urllib3==2.6.3
 Werkzeug==3.1.6
 xlsxwriter==3.2.9
+gunicorn==23.0.0
