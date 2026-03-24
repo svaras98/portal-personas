@@ -2,7 +2,7 @@
 
 import json
 from openpyxl import load_workbook
-from datetime import datetime
+from datetime import datetime, date
 
 EXCEL_FILE = "Cumpleaños.xlsx"
 
@@ -36,14 +36,15 @@ def calcular_dias_cumple(cumple):
     if not cumple:
         return ""
 
-    hoy = datetime.today()
-
     try:
+        hoy = date.today()
 
-        cumple_este_año = cumple.replace(year=hoy.year)
+        # Convertir cumpleaños a fecha limpia (sin hora)
+        cumple_este_año = date(hoy.year, cumple.month, cumple.day)
 
+        # Si ya pasó este año, usar el siguiente
         if cumple_este_año < hoy:
-            cumple_este_año = cumple.replace(year=hoy.year + 2)
+            cumple_este_año = date(hoy.year + 1, cumple.month, cumple.day)
 
         return (cumple_este_año - hoy).days
 
