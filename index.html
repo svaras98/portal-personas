@@ -114,6 +114,20 @@ transition:background 0.2s;
 background:#f2f2f2;
 }
 
+.resumen{
+display:flex;
+gap:15px;
+margin-right:15px;
+font-size:14px;
+font-weight:bold;
+}
+
+.resumen span{
+background:#eef2f5;
+padding:5px 10px;
+border-radius:6px;
+}
+
 @keyframes vibrar{
 0%{transform:rotate(0)}
 20%{transform:rotate(-15deg)}
@@ -185,6 +199,12 @@ gap:8px;
 
 <div class="right">
 
+<div class="resumen">
+<span id="activos">👥 0</span>
+<span id="inactivos">🚫 0</span>
+<span id="cumples">🎂 0</span>
+</div>
+
 <div class="campana" id="campana" onclick="toggleAvisos()">
 <i class="fa-solid fa-bell"></i>
 <span id="contadorAvisos" class="contador">0</span>
@@ -236,10 +256,34 @@ fetch("datos.json")
 datosGlobal=data;
 mostrar(datosGlobal);
 generarAvisos();
-})
-.catch(err=>{
-console.error("Error cargando datos:", err);
+generarResumen();
 });
+
+function generarResumen(){
+
+let activos=0;
+let inactivos=0;
+let cumples=0;
+
+datosGlobal.forEach(p=>{
+
+if(p.estado==="INACTIVO"){
+inactivos++;
+}else{
+activos++;
+}
+
+if(p.dias_cumple && p.dias_cumple<=7){
+cumples++;
+}
+
+});
+
+document.getElementById("activos").innerText="👥 "+activos;
+document.getElementById("inactivos").innerText="🚫 "+inactivos;
+document.getElementById("cumples").innerText="🎂 "+cumples;
+
+}
 
 function ordenarNombre(){
 
@@ -303,22 +347,22 @@ tabla.innerHTML=`
 data.forEach(p=>{
 
 let color="#2ecc71";
-
-if(p.estado && p.estado==="INACTIVO"){
-color="#e74c3c";
-}
-
 let diasMostrar=p.dias;
 
 if(p.dias==="INDEFINIDO"){
 diasMostrar="∞";
+color="#0b85dc";
+}else{
+let dias=obtenerNumeroSeguro(p.dias);
+if(dias<=5) color="#e74c3c";
+else if(dias<=14) color="#f39c12";
 }
 
 let fila=document.createElement("tr");
 
 fila.innerHTML=`
 <td class="nombre">
-<i class="fa-solid fa-user-circle" style="color:${color};"></i> ${p.nombre}
+<i class="fa-solid fa-user" style="color:${color};"></i> ${p.nombre}
 </td>
 <td>${p.rut}</td>
 <td>${p.tipo}</td>
@@ -362,7 +406,6 @@ alert("Error al actualizar");
 
 })
 .catch(err=>{
-console.error(err);
 alert("Error de conexión");
 });
 
@@ -370,73 +413,51 @@ alert("Error de conexión");
 
 function generarAvisos(){
 
-let activos=[];
-let contratos=[];
-let cumpleaños=[];
+let avisos=[];
 
 datosGlobal.forEach(p=>{
-
-if(p.estado==="INACTIVO"){
-activos.push({texto:"🔴 "+p.nombre+" ya no pertenece a la empresa",id:p.id});
-}else{
-activos.push({texto:"🟢 "+p.nombre+" activo",id:p.id});
-}
 
 if(p.dias!=="INDEFINIDO"){
 
 let dias=obtenerNumeroSeguro(p.dias);
 
-if(dias<=14){
-contratos.push({texto:"⚠️ "+p.nombre+" contrato vence en "+dias+" días",id:p.id});
+if(dias<=7){
+avisos.push({texto:"🚨 "+p.nombre+" contrato vence en "+dias+" días",id:p.id});
+}
+else if(dias<=14){
+avisos.push({texto:"⚠️ "+p.nombre+" contrato vence en "+dias+" días",id:p.id});
 }
 
-}
-
-if(p.dias_cumple && p.dias_cumple<=10){
-cumpleaños.push({texto:"🎂 "+p.nombre+" cumple en "+p.dias_cumple+" días",id:p.id});
 }
 
 });
 
 let panel=document.getElementById("panelAvisos");
 
-panel.innerHTML="<b>👥 Personal</b><br>";
+panel.innerHTML="<b>🔔 Contratos por vencer</b><br><br>";
 
-activos.forEach(a=>{
+avisos.forEach(a=>{
+
 let div=document.createElement("div");
 div.className="aviso";
 div.innerText=a.texto;
+
+div.onclick=()=>{
+window.location.href="detalle.html?id="+a.id;
+};
+
 panel.appendChild(div);
-});
 
-panel.innerHTML+="<br><b>⚠️ Contratos por vencer</b><br>";
-
-contratos.forEach(a=>{
-let div=document.createElement("div");
-div.className="aviso";
-div.innerText=a.texto;
-div.onclick=()=>{window.location.href="detalle.html?id="+a.id};
-panel.appendChild(div);
-});
-
-panel.innerHTML+="<br><b>🎂 Cumpleaños</b><br>";
-
-cumpleaños.forEach(a=>{
-let div=document.createElement("div");
-div.className="aviso";
-div.innerText=a.texto;
-div.onclick=()=>{window.location.href="detalle.html?id="+a.id};
-panel.appendChild(div);
 });
 
 let contador=document.getElementById("contadorAvisos");
 
-contador.innerText=contratos.length + cumpleaños.length;
+contador.innerText=avisos.length;
 
 if(avisosVistos){
 contador.style.display="none";
 }else{
-if(contador.innerText>0){
+if(avisos.length>0){
 iniciarVibracion();
 }
 }
