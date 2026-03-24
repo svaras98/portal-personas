@@ -4,7 +4,7 @@ import json
 import os
 from datetime import timedelta, datetime
 from leer_datos_jason import generar_json
-import pandas as pd   # ← AÑADIDO
+from openpyxl import load_workbook   # ← CAMBIO (en vez de pandas)
 
 app = Flask(__name__)
 app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
@@ -64,34 +64,44 @@ def datos():
     if "user" not in session:
         return redirect("/")
 
-    # 🔹 Generar automáticamente cada vez que se solicita
+    # generar datos automáticamente
     generar_json()
 
     return send_file(os.path.join(BASE_DIR, "datos.json"))
 
-# 🔴 NUEVA RUTA (NO MODIFICA NADA EXISTENTE)
+# 🔴 CAMBIO DE ESTADO SIN ROMPER PDFS
 @app.route("/desactivar/<rut>", methods=["POST"])
 def desactivar(rut):
 
     try:
 
+        data = request.get_json()
+        nuevo_estado = data.get("estado", "INACTIVO")
+
         archivo_excel = os.path.join(BASE_DIR, "Cumpleaños.xlsx")
 
-        df = pd.read_excel(archivo_excel)
+        wb = load_workbook(archivo_excel)
+        ws = wb.active
 
-        # limpiar nombres de columnas
-        df.columns = df.columns.str.strip().str.upper()
+        for row in range(2, ws.max_row + 1):
 
-        # buscar por carnet (rut)
-        df.loc[df["CARNET"].astype(str) == rut, "ESTADO"] = "INACTIVO"
+            rut_excel = str(ws[f"E{row}"].value)
 
-        df.to_excel(archivo_excel, index=False)
+            if rut_excel == rut:
+
+                ws[f"O{row}"] = nuevo_estado
+                break
+
+        wb.save(archivo_excel)
+
+        # regenerar json automáticamente
+        generar_json()
 
         return {"ok": True}
 
     except Exception as e:
 
-        print("Error al desactivar:", e)
+        print("Error al cambiar estado:", e)
 
         return {"ok": False}
 
@@ -101,6 +111,5 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port))
