@@ -303,22 +303,22 @@ tabla.innerHTML=`
 data.forEach(p=>{
 
 let color="#2ecc71";
+
+if(p.estado && p.estado==="INACTIVO"){
+color="#e74c3c";
+}
+
 let diasMostrar=p.dias;
 
 if(p.dias==="INDEFINIDO"){
 diasMostrar="∞";
-color="#0b85dc";
-}else{
-let dias=obtenerNumeroSeguro(p.dias);
-if(dias<=5) color="#e74c3c";
-else if(dias<=14) color="#f39c12";
 }
 
 let fila=document.createElement("tr");
 
 fila.innerHTML=`
 <td class="nombre">
-<i class="fa-solid fa-user" style="color:${color};"></i> ${p.nombre}
+<i class="fa-solid fa-user-circle" style="color:${color};"></i> ${p.nombre}
 </td>
 <td>${p.rut}</td>
 <td>${p.tipo}</td>
@@ -368,59 +368,75 @@ alert("Error de conexión");
 
 }
 
-/* TODO LO DEMÁS IGUAL (NO TOQUÉ AVISOS NI BUSCADOR) */
-
 function generarAvisos(){
 
-let avisos=[];
+let activos=[];
+let contratos=[];
+let cumpleaños=[];
 
 datosGlobal.forEach(p=>{
+
+if(p.estado==="INACTIVO"){
+activos.push({texto:"🔴 "+p.nombre+" ya no pertenece a la empresa",id:p.id});
+}else{
+activos.push({texto:"🟢 "+p.nombre+" activo",id:p.id});
+}
 
 if(p.dias!=="INDEFINIDO"){
 
 let dias=obtenerNumeroSeguro(p.dias);
 
-if(dias<=7){
-avisos.push({texto:"🚨 "+p.nombre+" contrato vence en "+dias+" días",id:p.id});
-}
-else if(dias<=14){
-avisos.push({texto:"⚠️ "+p.nombre+" contrato vence en "+dias+" días",id:p.id});
+if(dias<=14){
+contratos.push({texto:"⚠️ "+p.nombre+" contrato vence en "+dias+" días",id:p.id});
 }
 
 }
 
 if(p.dias_cumple && p.dias_cumple<=10){
-avisos.push({texto:"🎂 "+p.nombre+" cumple en "+p.dias_cumple+" días",id:p.id});
+cumpleaños.push({texto:"🎂 "+p.nombre+" cumple en "+p.dias_cumple+" días",id:p.id});
 }
 
 });
 
 let panel=document.getElementById("panelAvisos");
 
-panel.innerHTML="<b>🔔 Avisos</b><br><br>";
+panel.innerHTML="<b>👥 Personal</b><br>";
 
-avisos.forEach(a=>{
-
+activos.forEach(a=>{
 let div=document.createElement("div");
 div.className="aviso";
 div.innerText=a.texto;
-
-div.onclick=()=>{
-window.location.href="detalle.html?id="+a.id;
-};
-
 panel.appendChild(div);
+});
 
+panel.innerHTML+="<br><b>⚠️ Contratos por vencer</b><br>";
+
+contratos.forEach(a=>{
+let div=document.createElement("div");
+div.className="aviso";
+div.innerText=a.texto;
+div.onclick=()=>{window.location.href="detalle.html?id="+a.id};
+panel.appendChild(div);
+});
+
+panel.innerHTML+="<br><b>🎂 Cumpleaños</b><br>";
+
+cumpleaños.forEach(a=>{
+let div=document.createElement("div");
+div.className="aviso";
+div.innerText=a.texto;
+div.onclick=()=>{window.location.href="detalle.html?id="+a.id};
+panel.appendChild(div);
 });
 
 let contador=document.getElementById("contadorAvisos");
 
-contador.innerText=avisos.length;
+contador.innerText=contratos.length + cumpleaños.length;
 
 if(avisosVistos){
 contador.style.display="none";
 }else{
-if(avisos.length>0){
+if(contador.innerText>0){
 iniciarVibracion();
 }
 }
