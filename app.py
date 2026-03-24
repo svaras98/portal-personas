@@ -4,6 +4,7 @@ import json
 import os
 from datetime import timedelta, datetime
 from leer_datos_jason import generar_json
+import pandas as pd   # ← AÑADIDO
 
 app = Flask(__name__)
 app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
@@ -67,6 +68,30 @@ def datos():
     generar_json()
 
     return send_file(os.path.join(BASE_DIR, "datos.json"))
+
+# 🔴 NUEVA RUTA (NO MODIFICA NADA EXISTENTE)
+@app.route("/desactivar/<int:id>", methods=["POST"])
+def desactivar(id):
+
+    try:
+
+        archivo_excel = os.path.join(BASE_DIR, "trabajadores.xlsx")
+
+        df = pd.read_excel(archivo_excel)
+
+        if "id" in df.columns and "estado" in df.columns:
+
+            df.loc[df["id"] == id, "estado"] = "INACTIVO"
+
+            df.to_excel(archivo_excel, index=False)
+
+        return {"ok": True}
+
+    except Exception as e:
+
+        print("Error al desactivar:", e)
+
+        return {"ok": False}
 
 @app.route("/logout")
 def logout():
