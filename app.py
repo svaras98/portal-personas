@@ -62,7 +62,7 @@ def detalle():
 @app.route("/datos.json")
 def datos():
     if "user" not in session:
-        return {"error": "no autorizado"}, 403  # 🔒 CAMBIO CLAVE
+        return {"error": "no autorizado"}, 403  # 🔒 YA PROTEGIDO
 
     # generar datos automáticamente
     generar_json()
@@ -72,6 +72,10 @@ def datos():
 # 🔴 CAMBIO DE ESTADO SIN ROMPER PDFS
 @app.route("/desactivar/<rut>", methods=["POST"])
 def desactivar(rut):
+
+    # 🔒 PROTECCIÓN AGREGADA (LO ÚNICO NUEVO)
+    if "user" not in session:
+        return {"error": "no autorizado"}, 403
 
     try:
 
@@ -109,6 +113,10 @@ def desactivar(rut):
 def logout():
     session.clear()
     return redirect("/")
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
