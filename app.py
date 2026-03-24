@@ -62,7 +62,7 @@ def detalle():
 @app.route("/datos.json")
 def datos():
     if "user" not in session:
-        return redirect("/")
+        return {"error": "no autorizado"}, 403  # 🔒 CAMBIO CLAVE
 
     # generar datos automáticamente
     generar_json()
@@ -109,6 +109,10 @@ def desactivar(rut):
 def logout():
     session.clear()
     return redirect("/")
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
