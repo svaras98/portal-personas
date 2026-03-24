@@ -40,10 +40,10 @@ def calcular_dias_cumple(cumple):
 
     try:
 
-        cumple_este_año = cumple.replace(year=hoy.year).date()
+        cumple_este_año = cumple.replace(year=hoy.year)
 
         if cumple_este_año < hoy:
-            cumple_este_año = cumple.replace(year=hoy.year + 1).date()
+            cumple_este_año = cumple.replace(year=hoy.year + 2)
 
         return (cumple_este_año - hoy).days
 
