@@ -70,20 +70,22 @@ def datos():
     return send_file(os.path.join(BASE_DIR, "datos.json"))
 
 # 🔴 NUEVA RUTA (NO MODIFICA NADA EXISTENTE)
-@app.route("/desactivar/<int:id>", methods=["POST"])
-def desactivar(id):
+@app.route("/desactivar/<rut>", methods=["POST"])
+def desactivar(rut):
 
     try:
 
-        archivo_excel = os.path.join(BASE_DIR, "trabajadores.xlsx")
+        archivo_excel = os.path.join(BASE_DIR, "Cumpleaños.xlsx")
 
         df = pd.read_excel(archivo_excel)
 
-        if "id" in df.columns and "estado" in df.columns:
+        # limpiar nombres de columnas
+        df.columns = df.columns.str.strip().str.upper()
 
-            df.loc[df["id"] == id, "estado"] = "INACTIVO"
+        # buscar por carnet (rut)
+        df.loc[df["CARNET"].astype(str) == rut, "ESTADO"] = "INACTIVO"
 
-            df.to_excel(archivo_excel, index=False)
+        df.to_excel(archivo_excel, index=False)
 
         return {"ok": True}
 
