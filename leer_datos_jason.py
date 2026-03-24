@@ -26,6 +26,7 @@ def get_link(cell):
 
     return ""
 
+
 def calcular_dias_contrato(fecha):
     hoy = datetime.today()
     return (fecha - hoy).days + 1
@@ -39,10 +40,8 @@ def calcular_dias_cumple(cumple):
     try:
         hoy = date.today()
 
-        # Convertir cumpleaños a fecha limpia (sin hora)
         cumple_este_año = date(hoy.year, cumple.month, cumple.day)
 
-        # Si ya pasó este año, usar el siguiente
         if cumple_este_año < hoy:
             cumple_este_año = date(hoy.year + 1, cumple.month, cumple.day)
 
@@ -67,12 +66,19 @@ def generar_json():
         cumple = ws[f"C{row}"].value
         fecha_raw = ws[f"N{row}"].value
 
-        # 🔹 leer estado del Excel
+        # 🔥 MEJORA AQUÍ (SIN ROMPER NADA)
         estado = ws[f"O{row}"].value
 
-        # 🔹 si está vacío se considera ACTIVO
-        if not estado:
+        if estado:
+            estado = str(estado).strip().upper()
+        else:
             estado = "ACTIVO"
+
+        # Seguridad extra
+        if estado not in ["ACTIVO", "INACTIVO"]:
+            estado = "ACTIVO"
+
+        # -----------------------------
 
         if fecha_raw == "∞" or tipo == "INDEFINIDO":
 
