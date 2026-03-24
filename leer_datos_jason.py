@@ -65,7 +65,13 @@ def generar_json():
         rut = ws[f"E{row}"].value
         cumple = ws[f"C{row}"].value
         fecha_raw = ws[f"N{row}"].value
-        estado = ws[f"O{row}"].value   # ← añadimos estado
+
+        # 🔹 leer estado del Excel
+        estado = ws[f"O{row}"].value
+
+        # 🔹 si está vacío se considera ACTIVO
+        if not estado:
+            estado = "ACTIVO"
 
         if fecha_raw == "∞" or tipo == "INDEFINIDO":
 
@@ -97,7 +103,7 @@ def generar_json():
             "dias": dias,
             "fecha_termino": fecha_termino,
             "rut": rut if rut else "",
-            "estado": estado if estado else "ACTIVO",
+            "estado": estado,
 
             "cumple": cumple.strftime("%d/%m/%Y") if isinstance(cumple, datetime) else "",
             "dias_cumple": calcular_dias_cumple(cumple),
