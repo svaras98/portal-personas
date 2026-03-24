@@ -200,9 +200,9 @@ gap:8px;
 <div class="right">
 
 <div class="resumen">
-<span id="activos">👥 0</span>
-<span id="inactivos">🚫 0</span>
-<span id="cumples">🎂 0</span>
+<span id="activos" onclick="verActivos()" style="cursor:pointer;">👥 0</span>
+<span id="inactivos" onclick="verInactivos()" style="cursor:pointer;">🚫 0</span>
+<span id="cumples" onclick="verCumples()" style="cursor:pointer;">🎂 0</span>
 </div>
 
 <div class="campana" id="campana" onclick="toggleAvisos()">
@@ -282,6 +282,30 @@ cumples++;
 document.getElementById("activos").innerText="👥 "+activos;
 document.getElementById("inactivos").innerText="🚫 "+inactivos;
 document.getElementById("cumples").innerText="🎂 "+cumples;
+
+}
+
+  function verActivos(){
+
+let activos = datosGlobal.filter(p => p.estado !== "INACTIVO");
+
+mostrar(activos);
+
+}
+
+function verInactivos(){
+
+let inactivos = datosGlobal.filter(p => p.estado === "INACTIVO");
+
+mostrar(inactivos);
+
+}
+
+function verCumples(){
+
+let cumples = datosGlobal.filter(p => p.dias_cumple && p.dias_cumple <= 10);
+
+mostrar(cumples);
 
 }
 
@@ -371,8 +395,8 @@ ${diasMostrar}
 </td>
 <td>
 <button onclick="desactivarPersona('${p.rut}');event.stopPropagation();" 
-style="background:#e74c3c;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;">
-<i class="fa-solid fa-user-slash"></i>
+style="background:${p.estado==='INACTIVO' ? '#e74c3c' : '#2ecc71'};color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;">
+<i class="fa-solid ${p.estado==='INACTIVO' ? 'fa-user-slash' : 'fa-user'}"></i>
 </button>
 </td>
 `;
