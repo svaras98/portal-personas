@@ -394,7 +394,7 @@ fila.innerHTML=`
 ${diasMostrar}
 </td>
 <td>
-<button onclick="desactivarPersona('${p.rut}');event.stopPropagation();" 
+<button onclick="cambiarEstado('${p.rut}','${p.estado}');event.stopPropagation();" 
 style="background:${p.estado==='INACTIVO' ? '#e74c3c' : '#2ecc71'};color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;">
 <i class="fa-solid ${p.estado==='INACTIVO' ? 'fa-user-slash' : 'fa-user'}"></i>
 </button>
@@ -413,13 +413,18 @@ tabla.appendChild(fila);
 
 function cambiarEstado(rut,estado){
 
-let nuevoEstado = estado === "INACTIVO" ? "ACTIVO" : "INACTIVO";
+let nuevoEstado;
+let mensaje;
 
-let texto = nuevoEstado === "INACTIVO"
-? "¿Deseas marcar esta persona como Inactiva?"
-: "¿Deseas reactivar esta persona?";
+if(estado === "INACTIVO"){
+nuevoEstado = "ACTIVO";
+mensaje = "¿Deseas reactivar esta persona?";
+}else{
+nuevoEstado = "INACTIVO";
+mensaje = "¿Deseas marcar esta persona como inactiva?";
+}
 
-if(!confirm(texto)) return;
+if(!confirm(mensaje)) return;
 
 fetch("/desactivar/"+rut,{
 method:"POST",
@@ -434,13 +439,9 @@ estado:nuevoEstado
 .then(data=>{
 
 if(data.ok){
-
 location.reload();
-
 }else{
-
-alert("Error al actualizar");
-
+alert("Error al actualizar estado");
 }
 
 });
