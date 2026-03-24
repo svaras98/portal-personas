@@ -370,7 +370,7 @@ fila.innerHTML=`
 ${diasMostrar}
 </td>
 <td>
-<button onclick="desactivarPersona(${p.id});event.stopPropagation();" 
+<button onclick="desactivarPersona('${p.rut}');event.stopPropagation();" 
 style="background:#e74c3c;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;">
 <i class="fa-solid fa-user-slash"></i>
 </button>
@@ -387,11 +387,11 @@ tabla.appendChild(fila);
 
 }
 
-function desactivarPersona(id){
+function desactivarPersona(rut){
 
 if(!confirm("¿Deseas marcar esta persona como Inactiva?")) return;
 
-fetch("/desactivar/"+id,{
+fetch("/desactivar/"+rut,{
 method:"POST"
 })
 .then(res=>res.json())
@@ -404,9 +404,6 @@ location.reload();
 alert("Error al actualizar");
 }
 
-})
-.catch(err=>{
-alert("Error de conexión");
 });
 
 }
