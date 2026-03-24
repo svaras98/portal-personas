@@ -285,7 +285,7 @@ document.getElementById("cumples").innerText="🎂 "+cumples;
 
 }
 
-  function verActivos(){
+function verActivos(){
 
 let activos = datosGlobal.filter(p => p.estado !== "INACTIVO");
 
@@ -411,21 +411,36 @@ tabla.appendChild(fila);
 
 }
 
-function desactivarPersona(rut){
+function cambiarEstado(rut,estado){
 
-if(!confirm("¿Deseas marcar esta persona como Inactiva?")) return;
+let nuevoEstado = estado === "INACTIVO" ? "ACTIVO" : "INACTIVO";
+
+let texto = nuevoEstado === "INACTIVO"
+? "¿Deseas marcar esta persona como Inactiva?"
+: "¿Deseas reactivar esta persona?";
+
+if(!confirm(texto)) return;
 
 fetch("/desactivar/"+rut,{
-method:"POST"
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+estado:nuevoEstado
+})
 })
 .then(res=>res.json())
 .then(data=>{
 
 if(data.ok){
-alert("Persona marcada como Inactiva");
+
 location.reload();
+
 }else{
+
 alert("Error al actualizar");
+
 }
 
 });
