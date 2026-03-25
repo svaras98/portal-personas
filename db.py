@@ -1,12 +1,14 @@
 import sqlite3
+import os
 
 DB_FILE = "estado.db"
 
-def conectar():
-    return sqlite3.connect(DB_FILE)
 
+# =============================
+# CREAR TABLA SI NO EXISTE
+# =============================
 def crear_tabla():
-    conn = conectar()
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -19,9 +21,13 @@ def crear_tabla():
     conn.commit()
     conn.close()
 
-# Guardar estado
+
+# =============================
+# GUARDAR ESTADO
+# =============================
 def guardar_estado(rut, estado):
-    conn = conectar()
+
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -33,17 +39,25 @@ def guardar_estado(rut, estado):
     conn.commit()
     conn.close()
 
-# Obtener estado
+
+# =============================
+# OBTENER ESTADO
+# =============================
 def obtener_estado(rut):
-    conn = conectar()
+
+    conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
 
     cursor.execute("SELECT estado FROM estados WHERE rut = ?", (rut,))
-    resultado = cursor.fetchone()
+    result = cursor.fetchone()
 
     conn.close()
 
-    if resultado:
-        return resultado[0]
+    if result:
+        return result[0]
 
     return None
+
+
+# Crear tabla automáticamente
+crear_tabla()
