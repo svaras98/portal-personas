@@ -1,22 +1,37 @@
-# leer_datos_json.py
+# leer_datos_jason.py
 
 import json
+import os
 from openpyxl import load_workbook
 from datetime import datetime, date
 
 EXCEL_FILE = "Cumpleaños.xlsx"
+ESTADOS_FILE = "estados.json"
+
+
+# =============================
+# CARGAR ESTADOS JSON 🔥
+# =============================
+def cargar_estados():
+
+    if not os.path.exists(ESTADOS_FILE):
+        return {}
+
+    try:
+        with open(ESTADOS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {}
+
 
 def get_link(cell):
 
-    # Caso 1: hyperlink normal de Excel
     if cell.hyperlink:
         return cell.hyperlink.target
 
-    # Caso 2: hyperlink guardado como texto
     if isinstance(cell.value, str) and cell.value.startswith("http"):
         return cell.value
 
-    # Caso 3: fórmula =HYPERLINK(...)
     if isinstance(cell.value, str) and "HYPERLINK" in cell.value.upper():
         try:
             link = cell.value.split('"')[1]
@@ -56,6 +71,8 @@ def generar_json():
     wb = load_workbook(EXCEL_FILE)
     ws = wb.active
 
+    estados_guardados = cargar_estados()  # 🔥 NUEVO
+
     datos = []
 
     for row in range(2, ws.max_row + 1):
@@ -66,19 +83,29 @@ def generar_json():
         cumple = ws[f"C{row}"].value
         fecha_raw = ws[f"N{row}"].value
 
-        # 🔥 MEJORA AQUÍ (SIN ROMPER NADA)
-        estado = ws[f"O{row}"].value
+        rut_str = str(rut).strip() if rut else ""
 
-        if estado:
-            estado = str(estado).strip().upper()
-        else:
-            estado = "ACTIVO"
+        # =============================
+        # 🔥 ESTADO INTELIGENTE
+        # =============================
 
-        # Seguridad extra
+        # 1. Buscar en estados.json
+        estado = estados_guardados.get(rut_str)
+
+        # 2. Si no existe → usar Excel (columna O)
+        if not estado:
+            estado_excel = ws[f"O{row}"].value
+
+            if estado_excel:
+                estado = str(estado_excel).strip().upper()
+            else:
+                estado = "ACTIVO"
+
+        # 3. Seguridad
         if estado not in ["ACTIVO", "INACTIVO"]:
             estado = "ACTIVO"
 
-        # -----------------------------
+        # =============================
 
         if fecha_raw == "∞" or tipo == "INDEFINIDO":
 
@@ -109,7 +136,7 @@ def generar_json():
             "tipo": tipo,
             "dias": dias,
             "fecha_termino": fecha_termino,
-            "rut": rut if rut else "",
+            "rut": rut_str,
             "estado": estado,
 
             "cumple": cumple.strftime("%d/%m/%Y") if isinstance(cumple, datetime) else "",
