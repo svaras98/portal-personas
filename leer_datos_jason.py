@@ -1,27 +1,11 @@
 # leer_datos_jason.py
 
 import json
-import os
 from openpyxl import load_workbook
 from datetime import datetime, date
+from db import obtener_estado   # 🔥 NUEVO (SQLITE)
 
 EXCEL_FILE = "Cumpleaños.xlsx"
-ESTADOS_FILE = "estados.json"
-
-
-# =============================
-# CARGAR ESTADOS JSON 🔥
-# =============================
-def cargar_estados():
-
-    if not os.path.exists(ESTADOS_FILE):
-        return {}
-
-    try:
-        with open(ESTADOS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except:
-        return {}
 
 
 def get_link(cell):
@@ -71,8 +55,6 @@ def generar_json():
     wb = load_workbook(EXCEL_FILE)
     ws = wb.active
 
-    estados_guardados = cargar_estados()  # 🔥 NUEVO
-
     datos = []
 
     for row in range(2, ws.max_row + 1):
@@ -86,13 +68,11 @@ def generar_json():
         rut_str = str(rut).strip() if rut else ""
 
         # =============================
-        # 🔥 ESTADO INTELIGENTE
+        # 🔥 ESTADO DESDE SQLITE
         # =============================
+        estado = obtener_estado(rut_str)
 
-        # 1. Buscar en estados.json
-        estado = estados_guardados.get(rut_str)
-
-        # 2. Si no existe → usar Excel (columna O)
+        # Si no existe en DB → usar Excel
         if not estado:
             estado_excel = ws[f"O{row}"].value
 
@@ -101,7 +81,7 @@ def generar_json():
             else:
                 estado = "ACTIVO"
 
-        # 3. Seguridad
+        # Seguridad
         if estado not in ["ACTIVO", "INACTIVO"]:
             estado = "ACTIVO"
 
