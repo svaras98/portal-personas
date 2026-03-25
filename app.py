@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, session, send_from_directory, send_file
 import json
 import os
-from datetime import timedelta, datetime
+from datetime import timedelta
 from leer_datos_jason import generar_json
 from openpyxl import load_workbook
 
@@ -11,6 +11,7 @@ app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
 app.permanent_session_lifetime = timedelta(days=30)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ESTADOS_FILE = os.path.join(BASE_DIR, "estados.json")
 
 
 # =============================
@@ -22,12 +23,38 @@ def cargar_usuarios():
 
 
 # =============================
+# GUARDAR ESTADOS 🔥 NUEVO
+# =============================
+def guardar_estado_json(rut, estado):
+
+    try:
+
+        # Crear archivo si no existe
+        if not os.path.exists(ESTADOS_FILE):
+            with open(ESTADOS_FILE, "w", encoding="utf-8") as f:
+                json.dump({}, f)
+
+        # Leer estados actuales
+        with open(ESTADOS_FILE, "r", encoding="utf-8") as f:
+            estados = json.load(f)
+
+        # Actualizar estado
+        estados[rut] = estado
+
+        # Guardar
+        with open(ESTADOS_FILE, "w", encoding="utf-8") as f:
+            json.dump(estados, f, indent=4, ensure_ascii=False)
+
+    except Exception as e:
+        print("Error guardando estados.json:", e)
+
+
+# =============================
 # LOGIN
 # =============================
 @app.route("/", methods=["GET", "POST"])
 def login():
 
-    # Si ya está logueado
     if "user" in session:
         return redirect("/index.html")
 
@@ -51,7 +78,7 @@ def login():
 
 
 # =============================
-# INDEX (PROTEGIDO)
+# INDEX
 # =============================
 @app.route("/index.html")
 def index():
@@ -61,7 +88,7 @@ def index():
 
 
 # =============================
-# DETALLE (PROTEGIDO)
+# DETALLE
 # =============================
 @app.route("/detalle.html")
 def detalle():
@@ -71,7 +98,7 @@ def detalle():
 
 
 # =============================
-# DATOS JSON (PROTEGIDO)
+# DATOS JSON
 # =============================
 @app.route("/datos.json")
 def datos():
@@ -79,14 +106,13 @@ def datos():
     if "user" not in session:
         return {"error": "no autorizado"}, 403
 
-    # Generar JSON automáticamente
     generar_json()
 
     return send_file(os.path.join(BASE_DIR, "datos.json"))
 
 
 # =============================
-# CAMBIAR ESTADO (PROTEGIDO)
+# CAMBIAR ESTADO 🔥 MEJORADO
 # =============================
 @app.route("/desactivar/<rut>", methods=["POST"])
 def desactivar(rut):
@@ -109,12 +135,18 @@ def desactivar(rut):
             rut_excel = str(ws[f"E{row}"].value)
 
             if rut_excel == rut:
+
+                # 🔹 Guardar en Excel
                 ws[f"O{row}"] = nuevo_estado
+
                 break
 
         wb.save(archivo_excel)
 
-        # Regenerar JSON
+        # 🔥 GUARDAR EN JSON (PERSISTENTE)
+        guardar_estado_json(rut, nuevo_estado)
+
+        # 🔄 Regenerar datos
         generar_json()
 
         return {"ok": True}
