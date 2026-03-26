@@ -18,7 +18,11 @@ from pypdf import PdfReader
 SHEET_ID = "11omZV-J8sn_qZ7htmaF-9tgCGwh_fwcklGchlGOA0RI"
 SHEET_NAME = "Hoja 1"
 
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
+
 
 CREDS = Credentials.from_service_account_file(
     "credenciales.json", scopes=SCOPES
