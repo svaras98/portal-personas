@@ -1,4 +1,5 @@
 import os
+import json
 import gspread
 
 from google.oauth2.service_account import Credentials
@@ -19,12 +20,16 @@ SHEET_NAME = "Hoja 1"
 FOLDER_ID = "1MAleZ8QRbl7ldXYlORErhGQP_ptnYIxq"
 
 # =========================
-# AUTH
+# AUTH (🔥 CLAVE)
 # =========================
 
-creds = Credentials.from_service_account_file(
-    "credenciales.json", scopes=SCOPES
-)
+if os.getenv("GOOGLE_CREDENTIALS"):
+    creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+    creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+else:
+    creds = Credentials.from_service_account_file(
+        "credenciales.json", scopes=SCOPES
+    )
 
 # Sheets
 client = gspread.authorize(creds)
@@ -86,11 +91,10 @@ def obtener_pdfs(folder_id):
     return results.get("files", [])
 
 # =========================
-# COLUMNAS (POR NOMBRE)
+# COLUMNAS DINÁMICAS
 # =========================
 
 headers = sheet.row_values(1)
-
 col_index = {name: idx+1 for idx, name in enumerate(headers)}
 
 # =========================
