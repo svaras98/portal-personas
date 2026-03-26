@@ -1,6 +1,5 @@
-# leer_datos_jason.py
-
 import json
+import os
 import gspread
 from datetime import datetime, date
 from google.oauth2.service_account import Credentials
@@ -9,11 +8,14 @@ from db import obtener_estado, guardar_estado
 SHEET_ID = "11omZV-J8sn_qZ7htmaF-9tgCGwh_fwcklGchlGOA0RI"
 SHEET_NAME = "Hoja 1"
 
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
-import os
-import json
-
+# =============================
+# CREDENCIALES (LOCAL / RENDER)
+# =============================
 if os.getenv("GOOGLE_CREDENTIALS"):
     creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
     CREDS = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
@@ -32,7 +34,6 @@ def calcular_dias_contrato(fecha):
 
 
 def calcular_dias_cumple(cumple):
-
     if not cumple:
         return ""
 
@@ -52,7 +53,6 @@ def calcular_dias_cumple(cumple):
 def generar_json():
 
     datos_sheet = sheet.get_all_records()
-
     datos = []
 
     for i, row in enumerate(datos_sheet, start=2):
@@ -88,22 +88,24 @@ def generar_json():
         else:
 
             try:
-                fecha = datetime.strptime(fecha_raw, "%d-%m-%Y")
+                if fecha_raw:
+                    fecha = datetime.strptime(fecha_raw, "%d-%m-%Y")
 
-                dias = calcular_dias_contrato(fecha)
-                fecha_termino = fecha.strftime("%d-%m-%Y")
+                    dias = calcular_dias_contrato(fecha)
+                    fecha_termino = fecha.strftime("%d-%m-%Y")
 
-                # 🔥 AUTO INACTIVO
-                if isinstance(dias, int) and dias <= 0:
-                    estado = "INACTIVO"
-                    guardar_estado(rut, "INACTIVO")
+                    if isinstance(dias, int) and dias <= 0:
+                        estado = "INACTIVO"
+                        guardar_estado(rut, "INACTIVO")
+                else:
+                    dias = ""
+                    fecha_termino = None
 
             except:
                 dias = ""
                 fecha_termino = None
 
         persona = {
-
             "id": i,
             "nombre": nombre,
             "tipo": tipo,
@@ -122,7 +124,6 @@ def generar_json():
                 "lc": row.get("PDF LC", ""),
                 "informe": row.get("PDF INFORME", "")
             }
-
         }
 
         datos.append(persona)
