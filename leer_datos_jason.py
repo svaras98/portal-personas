@@ -3,7 +3,7 @@
 import json
 from openpyxl import load_workbook
 from datetime import datetime, date
-from db import obtener_estado   # 🔥 NUEVO (SQLITE)
+from db import obtener_estado, guardar_estado   # 🔥 agregado guardar_estado
 
 EXCEL_FILE = "Cumpleaños.xlsx"
 
@@ -72,7 +72,6 @@ def generar_json():
         # =============================
         estado = obtener_estado(rut_str)
 
-        # Si no existe en DB → usar Excel
         if not estado:
             estado_excel = ws[f"O{row}"].value
 
@@ -81,7 +80,6 @@ def generar_json():
             else:
                 estado = "ACTIVO"
 
-        # Seguridad
         if estado not in ["ACTIVO", "INACTIVO"]:
             estado = "ACTIVO"
 
@@ -103,6 +101,11 @@ def generar_json():
 
                 dias = calcular_dias_contrato(fecha)
                 fecha_termino = fecha.strftime("%d-%m-%Y")
+
+                # 🔥 AUTO INACTIVO SI TERMINÓ CONTRATO
+                if isinstance(dias, int) and dias <= 0:
+                    estado = "INACTIVO"
+                    guardar_estado(rut_str, "INACTIVO")  # 🔥 guarda en SQLite
 
             except:
 
