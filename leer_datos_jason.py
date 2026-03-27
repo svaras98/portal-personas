@@ -64,22 +64,23 @@ def generar_json():
         cumple_raw = row.get("CUMPLEAÑOS")
         fecha_raw = row.get("FECHA DE CONTRATO")
 
-       cumple = None
-       if cumple_raw:
-          try:
-               if isinstance(cumple_raw, datetime):
-                   cumple = cumple_raw
-          else:
-               cumple_str = str(cumple_raw).strip()
-
-               for formato in ["%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d", "%d/%m/%y"]:
-                  try:
-                    cumple = datetime.strptime(cumple_str, formato)
-                    break
-                  except:
-                    continue
-    except:
+        # 🔥 PARSEO ROBUSTO DE FECHA DE CUMPLE
         cumple = None
+        if cumple_raw:
+            try:
+                if isinstance(cumple_raw, datetime):
+                    cumple = cumple_raw
+                else:
+                    cumple_str = str(cumple_raw).strip()
+
+                    for formato in ["%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d", "%d/%m/%y"]:
+                        try:
+                            cumple = datetime.strptime(cumple_str, formato)
+                            break
+                        except:
+                            continue
+            except:
+                cumple = None
 
         estado = obtener_estado(rut)
 
@@ -99,7 +100,7 @@ def generar_json():
 
             try:
                 if fecha_raw:
-                    fecha = datetime.strptime(fecha_raw, "%d-%m-%Y")
+                    fecha = datetime.strptime(str(fecha_raw), "%d-%m-%Y")
 
                     dias = calcular_dias_contrato(fecha)
                     fecha_termino = fecha.strftime("%d-%m-%Y")
