@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import gspread
+import subprocess
 
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
@@ -21,7 +22,7 @@ SHEET_NAME = "Hoja 1"
 FOLDER_ID = "1MAleZ8QRbl7ldXYlORErhGQP_ptnYIxq"
 
 # =========================
-# AUTH 🔥
+# AUTH
 # =========================
 
 if os.getenv("GOOGLE_CREDENTIALS"):
@@ -30,14 +31,12 @@ if os.getenv("GOOGLE_CREDENTIALS"):
 else:
     creds = Credentials.from_service_account_file("credenciales.json", scopes=SCOPES)
 
-# Sheets
 client = gspread.authorize(creds)
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
-# Drive
 service = build("drive", "v3", credentials=creds)
 
-print("✅ Conectado a Google Drive + Sheets")
+print("✅ Conectado a Google Drive + Sheets\n")
 
 # =========================
 # FUNCIONES
@@ -79,44 +78,76 @@ def contar_pdfs_sheet(row):
 
 
 # =========================
-# PROCESO
+# PROCESO PRINCIPAL
 # =========================
 
-data = sheet.get_all_records()
-cambios_detectados = False
+def verificar():
 
-for row in data:
+    data = sheet.get_all_records()
+    cambios_detectados = False
 
-    nombre_excel = str(row.get("NOMBRE", "")).upper()
-    nombre_busqueda = invertir_nombre(nombre_excel)
+    for row in data:
 
-    print("🔎 Revisando:", nombre_busqueda)
+        nombre_excel = str(row.get("NOMBRE", "")).upper()
+        nombre_busqueda = invertir_nombre(nombre_excel)
 
-    carpeta = buscar_carpeta(nombre_busqueda)
+        print("🔎 Revisando:", nombre_busqueda)
 
-    if not carpeta:
-        print("❌ Carpeta no encontrada\n")
-        continue
+        carpeta = buscar_carpeta(nombre_busqueda)
 
-    pdf_drive = contar_pdfs_drive(carpeta)
-    pdf_sheet = contar_pdfs_sheet(row)
+        if not carpeta:
+            print("❌ Carpeta no encontrada\n")
+            continue
 
-    print("Drive:", pdf_drive, "| Sheet:", pdf_sheet)
+        pdf_drive = contar_pdfs_drive(carpeta)
+        pdf_sheet = contar_pdfs_sheet(row)
 
-    if pdf_drive > pdf_sheet:
-        print("🚨 CAMBIOS DETECTADOS\n")
-        cambios_detectados = True
-        break
+        print("Drive:", pdf_drive, "| Sheet:", pdf_sheet)
 
-    print("✔ Sin cambios\n")
+        if pdf_drive > pdf_sheet:
+            print("🚨 CAMBIOS DETECTADOS\n")
+            cambios_detectados = True
+        else:
+            print("✔ Sin cambios\n")
+
+    return cambios_detectados
 
 
 # =========================
-# RESULTADO
+# EJECUTAR FLUJO COMPLETO
 # =========================
 
-if cambios_detectados:
-    os.system("python vincula_pdfs_sheets.py")
-    os.system("python contratos_fecha.py")
-else:
-    sys.exit(0)
+def ejecutar_pipeline():
+
+    try:
+        print("⚙️ Ejecutando vinculación de PDFs...")
+        subprocess.run(["python", "vincula_pdfs_sheets.py"], check=True)
+
+        print("📄 Procesando contratos...")
+        subprocess.run(["python", "contratos_fecha.py"], check=True)
+
+        print("🔄 Generando JSON...")
+        subprocess.run(["python", "leer_datos_jason.py"], check=True)
+
+        print("✅ PIPELINE COMPLETO OK\n")
+
+    except subprocess.CalledProcessError as e:
+        print("❌ ERROR en pipeline:", e)
+
+
+# =========================
+# MAIN
+# =========================
+
+if __name__ == "__main__":
+
+    print("🚀 INICIANDO VERIFICACIÓN...\n")
+
+    cambios = verificar()
+
+    if cambios:
+        ejecutar_pipeline()
+        sys.exit(1)  # útil para cron/logs
+    else:
+        print("✔ Todo actualizado, no se requieren cambios\n")
+        sys.exit(0)
