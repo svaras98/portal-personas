@@ -230,8 +230,15 @@ window.location.href="/logout";
 
 function obtenerNumeroSeguro(valor){
 if(valor==="INDEFINIDO") return 999999;
+
 let n = parseInt(valor);
-return isNaN(n) ? 999999 : n;
+
+if(isNaN(n)) return 999999;
+
+// 🔥 evitar negativos
+if(n < 0) return 0;
+
+return n;
 }
 
 function obtenerFechaHoy(){
