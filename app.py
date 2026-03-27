@@ -1,30 +1,31 @@
 from flask import Flask, request, redirect, session, send_from_directory, send_file
 import json
 import os
-from datetime import timedelta
+from datetime import timedelta, datetime
 from leer_datos_jason import generar_json
-from db import guardar_estado  # 🔥 NUEVO
+from db import guardar_estado
 
-# 🔥 GOOGLE SHEETS
 import gspread
 from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
 app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
 
+# ⏱️ TIEMPO DE INICIO DEL SERVIDOR (CLAVE)
+SERVER_START = datetime.utcnow()
+
 app.permanent_session_lifetime = timedelta(days=30)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # =============================
-# GOOGLE SHEETS CONFIG 🔥
+# GOOGLE SHEETS CONFIG
 # =============================
 SHEET_ID = "11omZV-J8sn_qZ7htmaF-9tgCGwh_fwcklGchlGOA0RI"
 SHEET_NAME = "Hoja 1"
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-# 🔥 USAR ENV EN RENDER
 if os.getenv("GOOGLE_CREDENTIALS"):
     creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
     CREDS = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
@@ -36,6 +37,25 @@ else:
 
 client = gspread.authorize(CREDS)
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
+
+# =============================
+# VALIDAR SESIÓN EN CADA REQUEST 🔥
+# =============================
+@app.before_request
+def validar_sesion():
+
+    if "user" in session:
+
+        recordar = session.get("recordar", False)
+        login_time = session.get("login_time")
+
+        if not recordar and login_time:
+            login_time = datetime.fromisoformat(login_time)
+
+            # 🔥 SI EL SERVIDOR SE REINICIÓ → LOGOUT
+            if login_time < SERVER_START:
+                session.clear()
+                return redirect("/")
 
 # =============================
 # CARGAR USUARIOS
@@ -63,8 +83,15 @@ def login():
 
         for u in usuarios:
             if u["usuario"] == user and u["password"] == password:
+
                 session["user"] = user
+                session["recordar"] = bool(recordar)
+
+                # ⏱️ guardar momento de login
+                session["login_time"] = datetime.utcnow().isoformat()
+
                 session.permanent = bool(recordar)
+
                 return redirect("/index.html")
 
         return redirect("/?error=1")
@@ -102,7 +129,7 @@ def datos():
     return send_file(os.path.join(BASE_DIR, "datos.json"))
 
 # =============================
-# CAMBIAR ESTADO 🔥🔥🔥
+# CAMBIAR ESTADO
 # =============================
 @app.route("/desactivar/<rut>", methods=["POST"])
 def desactivar(rut):
@@ -114,10 +141,8 @@ def desactivar(rut):
         data = request.get_json()
         nuevo_estado = data.get("estado", "INACTIVO")
 
-        # 🔥 1. GUARDAR EN SQLITE
         guardar_estado(rut, nuevo_estado)
 
-        # 🔥 2. ACTUALIZAR GOOGLE SHEETS
         datos_sheet = sheet.get_all_records()
 
         for i, row in enumerate(datos_sheet, start=2):
@@ -125,10 +150,9 @@ def desactivar(rut):
             rut_sheet = str(row.get("CARNET", "")).strip()
 
             if rut_sheet == rut:
-                sheet.update_cell(i, 15, nuevo_estado)  # Columna O
+                sheet.update_cell(i, 15, nuevo_estado)
                 break
 
-        # 🔥 3. REGENERAR JSON
         generar_json()
 
         return {"ok": True}
