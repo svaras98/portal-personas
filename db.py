@@ -1,63 +1,50 @@
 import sqlite3
 import os
 
-DB_FILE = os.path.join(os.path.dirname(__file__), "estado.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "estado.db")
+
+
+def get_conn():
+    return sqlite3.connect(DB_FILE)
 
 
 # =============================
-# CREAR TABLA SI NO EXISTE
+# CREAR TABLA
 # =============================
 def crear_tabla():
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS estados (
-            rut TEXT PRIMARY KEY,
-            estado TEXT
-        )
-    """)
-
-    conn.commit()
-    conn.close()
+    with get_conn() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS estados (
+                rut TEXT PRIMARY KEY,
+                estado TEXT
+            )
+        """)
 
 
 # =============================
 # GUARDAR ESTADO
 # =============================
 def guardar_estado(rut, estado):
-
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        INSERT INTO estados (rut, estado)
-        VALUES (?, ?)
-        ON CONFLICT(rut) DO UPDATE SET estado=excluded.estado
-    """, (rut, estado))
-
-    conn.commit()
-    conn.close()
+    with get_conn() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO estados (rut, estado)
+            VALUES (?, ?)
+            ON CONFLICT(rut) DO UPDATE SET estado=excluded.estado
+        """, (rut, estado))
 
 
 # =============================
 # OBTENER ESTADO
 # =============================
 def obtener_estado(rut):
-
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT estado FROM estados WHERE rut = ?", (rut,))
-    result = cursor.fetchone()
-
-    conn.close()
-
-    if result:
-        return result[0]
-
-    return None
+    with get_conn() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT estado FROM estados WHERE rut = ?", (rut,))
+        result = cursor.fetchone()
+        return result[0] if result else None
 
 
-# Crear tabla automáticamente
 crear_tabla()
