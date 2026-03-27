@@ -319,7 +319,10 @@ mostrar(inactivos);
 
 function verCumples(){
 
-let cumples = datosGlobal.filter(p => p.dias_cumple && p.dias_cumple <= 10);
+let cumples = datosGlobal.filter(p => {
+    let dias = parseInt(p.dias_cumple);
+    return !isNaN(dias) && dias >= 0 && dias <= 10;
+});
 
 mostrar(cumples);
 
@@ -386,15 +389,21 @@ tabla.innerHTML=`
 `;
 
 data.forEach(p=>{
+
+let color="#2ecc71";
+let diasMostrar = p.dias ?? "";
+
+// 🔥 DEFINIR ESTO (TE FALTABA)
 let diasCumple = parseInt(p.dias_cumple);
 let colorCumple = "";
 
+// 🎂 lógica cumpleaños
 if(!isNaN(diasCumple)){
     if(diasCumple === 0){
-        colorCumple = "background:#e74c3c;color:white;font-weight:bold;"; // HOY 🔥
+        colorCumple = "background:#e74c3c;color:white;font-weight:bold;";
     }
     else if(diasCumple <= 7){
-        colorCumple = "background:#f39c12;color:white;font-weight:bold;"; // PRÓXIMO ⚠️
+        colorCumple = "background:#f39c12;color:white;font-weight:bold;";
     }
 }
 
@@ -420,7 +429,12 @@ ${diasMostrar}
 </td>
 
 <td style="${colorCumple}">
-${!isNaN(diasCumple) ? diasCumple + " días" : ""}
+${diasCumple === 0 
+    ? "🎉 HOY" 
+    : diasCumple === 1 
+        ? "🎂 Mañana" 
+        : (!isNaN(diasCumple) ? diasCumple + " días" : "")
+}
 </td>
 <td>
 <button onclick="cambiarEstado('${p.rut}','${p.estado}');event.stopPropagation();" 
