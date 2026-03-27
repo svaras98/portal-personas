@@ -95,20 +95,29 @@ function getID(){
     return params.get("id");
 }
 
-// --- NUEVA FUNCIÓN PARA CALCULAR DÍAS RESTANTES AL CUMPLE ---
+// --- FUNCIÓN PARA CALCULAR DÍAS RESTANTES AL CUMPLE (soporta DD-MM-YYYY) ---
 function calcularDiasCumple(cumpleStr) {
     if (!cumpleStr) return "N/A";
 
-    const partes = cumpleStr.split("/");
-    const dia = parseInt(partes[0]);
-    const mes = parseInt(partes[1]) - 1; // JS meses 0-11
-    const anio = parseInt(partes[2]);
+    // Elimina espacios
+    cumpleStr = cumpleStr.trim();
+
+    // Acepta DD/MM/YYYY o DD-MM-YYYY
+    const separador = cumpleStr.includes("/") ? "/" : "-";
+    const partes = cumpleStr.split(separador);
+    if (partes.length !== 3) return "N/A";
+
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1; // JS meses 0-11
+    const anio = parseInt(partes[2], 10);
+
+    if (isNaN(dia) || isNaN(mes) || isNaN(anio)) return "N/A";
 
     const hoy = new Date();
     let cumpleEsteAnio = new Date(hoy.getFullYear(), mes, dia);
 
-    if (cumpleEsteAnio < hoy) {
-        // Cumple del próximo año
+    // Si ya pasó este año, usar el próximo
+    if (cumpleEsteAnio < new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate())) {
         cumpleEsteAnio = new Date(hoy.getFullYear() + 1, mes, dia);
     }
 
