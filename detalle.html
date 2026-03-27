@@ -95,38 +95,31 @@ function getID(){
     return params.get("id");
 }
 
-// --- FUNCIÓN PARA CALCULAR DÍAS RESTANTES AL CUMPLE (soporta DD-MM-YYYY o DD/MM/YYYY) ---
+// --- FUNCIÓN CORREGIDA ---
 function calcularDiasCumple(cumpleStr) {
     if (!cumpleStr) return "N/A";
 
-    // Quitar espacios
     cumpleStr = cumpleStr.trim();
 
-    // Separador: guion o slash
-    const separador = cumpleStr.includes("/") ? "/" : "-";
-    const partes = cumpleStr.split(separador);
+    const partes = cumpleStr.split("/");
     if (partes.length !== 3) return "N/A";
 
     const dia = parseInt(partes[0], 10);
-    const mes = parseInt(partes[1], 10) - 1; // JS meses 0-11
-    const anio = parseInt(partes[2], 10);
+    const mes = parseInt(partes[1], 10) - 1;
 
-    if (isNaN(dia) || isNaN(mes) || isNaN(anio)) return "N/A";
+    if (isNaN(dia) || isNaN(mes)) return "N/A";
 
-    // Fecha de hoy con hora 0 para comparación
     const hoy = new Date();
     const hoySinHora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
 
     let cumpleEsteAnio = new Date(hoy.getFullYear(), mes, dia);
 
-    // Si ya pasó este año, usar el próximo
     if (cumpleEsteAnio < hoySinHora) {
         cumpleEsteAnio = new Date(hoy.getFullYear() + 1, mes, dia);
     }
 
     const diffTime = cumpleEsteAnio - hoySinHora;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
 fetch("datos.json")
@@ -150,17 +143,19 @@ fetch("datos.json")
           informe: "Ver Informe (PDF INFORME)"
       };
 
-      // --- CALCULO DINAMICO DE DIAS PARA CUMPLE ---
-      let diasCumple = calcularDiasCumple(persona.cumple);
+      // 🔥 LIMPIEZA REAL DEL DATO
+      let cumpleLimpio = persona.cumple ? persona.cumple.replace(/[^0-9\/]/g, "").trim() : "";
+
+      let diasCumple = calcularDiasCumple(cumpleLimpio);
 
       let html = `
-          <h2>${persona.nombre}</h2>
+          <h2>${persona.nombre.trim()}</h2>
 
           <div class="info">
               <p><b>RUT:</b> ${persona.rut}</p>
               <p><b>Tipo:</b> ${persona.tipo}</p>
               <p><b>Días Vencimiento de contrato:</b> ${diasMostrar}</p>
-              <p><b>Cumpleaños:</b> ${persona.cumple}</p>
+              <p><b>Cumpleaños:</b> ${cumpleLimpio || "No registrado"}</p>
               <p><b>Días Para Su Cumpleaños:</b> ${diasCumple} días</p>
           </div>
 
