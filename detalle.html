@@ -95,54 +95,80 @@ function getID(){
     return params.get("id");
 }
 
+// --- NUEVA FUNCIÓN PARA CALCULAR DÍAS RESTANTES AL CUMPLE ---
+function calcularDiasCumple(cumpleStr) {
+    if (!cumpleStr) return "N/A";
+
+    const partes = cumpleStr.split("/");
+    const dia = parseInt(partes[0]);
+    const mes = parseInt(partes[1]) - 1; // JS meses 0-11
+    const anio = parseInt(partes[2]);
+
+    const hoy = new Date();
+    let cumpleEsteAnio = new Date(hoy.getFullYear(), mes, dia);
+
+    if (cumpleEsteAnio < hoy) {
+        // Cumple del próximo año
+        cumpleEsteAnio = new Date(hoy.getFullYear() + 1, mes, dia);
+    }
+
+    const diffTime = cumpleEsteAnio - hoy;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+}
+
 fetch("datos.json")
 .then(res => res.json())
 .then(data => {
 
       let id = getID();
-     let persona = data.find(p => p.id == id);
+      let persona = data.find(p => p.id == id);
 
-     let diasMostrar = persona.dias;
+      let diasMostrar = persona.dias;
 
-     if (persona.dias === "INDEFINIDO") {
-        diasMostrar = "∞";
-    }
-    let nombres = {
-        ci: "Ver CI (PDF CI)",
-        contrato: "Ver Contrato (PDF CT)",
-        psi: "Ver PSI (PDF PSI)",
-        lc: "Ver Licencia (PDF LC)",
-        informe: "Ver Informe (PDF INFORME)"
-    };
+      if (persona.dias === "INDEFINIDO") {
+          diasMostrar = "∞";
+      }
 
-    let html = `
-        <h2>${persona.nombre}</h2>
+      let nombres = {
+          ci: "Ver CI (PDF CI)",
+          contrato: "Ver Contrato (PDF CT)",
+          psi: "Ver PSI (PDF PSI)",
+          lc: "Ver Licencia (PDF LC)",
+          informe: "Ver Informe (PDF INFORME)"
+      };
 
-        <div class="info">
-            <p><b>RUT:</b> ${persona.rut}</p>
-            <p><b>Tipo:</b> ${persona.tipo}</p>
-            <p><b>Días Vencimiento de contrato:</b> ${diasMostrar}</p>
-            <p><b>Cumpleaños:</b> ${persona.cumple}</p>
-            <p><b>Días Para Su Cumpleaños:</b> ${persona.dias_cumple} días</p>
-        </div>
+      // --- CALCULO DINAMICO DE DIAS PARA CUMPLE ---
+      let diasCumple = calcularDiasCumple(persona.cumple);
 
-        <hr>
+      let html = `
+          <h2>${persona.nombre}</h2>
 
-        <div class="pdfs">
-            <h3>Documentos</h3>
-    `;
+          <div class="info">
+              <p><b>RUT:</b> ${persona.rut}</p>
+              <p><b>Tipo:</b> ${persona.tipo}</p>
+              <p><b>Días Vencimiento de contrato:</b> ${diasMostrar}</p>
+              <p><b>Cumpleaños:</b> ${persona.cumple}</p>
+              <p><b>Días Para Su Cumpleaños:</b> ${diasCumple} días</p>
+          </div>
 
-    for (let key in persona.pdfs){
-        let link = persona.pdfs[key];
+          <hr>
 
-        if (link){
-            html += `<a href="${link}" target="_blank">${nombres[key]}</a>`;
-        }
-    }
+          <div class="pdfs">
+              <h3>Documentos</h3>
+      `;
 
-    html += `</div>`;
+      for (let key in persona.pdfs){
+          let link = persona.pdfs[key];
 
-    document.getElementById("detalle").innerHTML = html;
+          if (link){
+              html += `<a href="${link}" target="_blank">${nombres[key]}</a>`;
+          }
+      }
+
+      html += `</div>`;
+
+      document.getElementById("detalle").innerHTML = html;
 
 });
 
