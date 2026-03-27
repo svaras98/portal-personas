@@ -175,27 +175,18 @@ def logout():
 @app.route("/auto-proceso")
 def auto_proceso():
 
+    import subprocess
+    import sys
+
+    print("🚀 INICIANDO PROCESO AUTOMÁTICO")
+
     try:
-        import subprocess
-        import sys
-
-        print("🚀 INICIANDO PROCESO AUTOMÁTICO")
-
-        result = subprocess.run(
-            [sys.executable, "verificar_cambios.py"],
-            capture_output=True,
-            text=True
-        )
-
-        print(result.stdout)
-        print(result.stderr)
-
+        # Esto ejecuta el script y manda todo stdout/stderr directo a los logs de Render
+        subprocess.run([sys.executable, "verificar_cambios.py"], check=True)
         print("✅ PROCESO TERMINADO")
-
         return "Proceso ejecutado OK"
-
-    except Exception as e:
-        print("❌ ERROR:", e)
+    except subprocess.CalledProcessError as e:
+        print("❌ ERROR EN SCRIPT:", e)
         return "Error en proceso", 500
 
 # =============================
