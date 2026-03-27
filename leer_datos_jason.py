@@ -64,12 +64,22 @@ def generar_json():
         cumple_raw = row.get("CUMPLEAÑOS")
         fecha_raw = row.get("FECHA DE CONTRATO")
 
+       cumple = None
+       if cumple_raw:
+          try:
+               if isinstance(cumple_raw, datetime):
+                   cumple = cumple_raw
+          else:
+               cumple_str = str(cumple_raw).strip()
+
+               for formato in ["%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d", "%d/%m/%y"]:
+                  try:
+                    cumple = datetime.strptime(cumple_str, formato)
+                    break
+                  except:
+                    continue
+    except:
         cumple = None
-        if cumple_raw:
-            try:
-                cumple = datetime.strptime(cumple_raw, "%d/%m/%Y")
-            except:
-                pass
 
         estado = obtener_estado(rut)
 
