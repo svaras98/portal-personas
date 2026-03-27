@@ -24,10 +24,15 @@ SHEET_NAME = "Hoja 1"
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-CREDS = Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, "credenciales.json"),
-    scopes=SCOPES
-)
+# 🔥 USAR ENV EN RENDER
+if os.getenv("GOOGLE_CREDENTIALS"):
+    creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+    CREDS = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+else:
+    CREDS = Credentials.from_service_account_file(
+        os.path.join(BASE_DIR, "credenciales.json"),
+        scopes=SCOPES
+    )
 
 client = gspread.authorize(CREDS)
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
