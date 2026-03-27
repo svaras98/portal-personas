@@ -170,6 +170,35 @@ def logout():
     return redirect("/")
 
 # =============================
+# AUTO PROCESO (CRON) 🔥
+# =============================
+@app.route("/auto-proceso")
+def auto_proceso():
+
+    try:
+        import subprocess
+        import sys
+
+        print("🚀 INICIANDO PROCESO AUTOMÁTICO")
+
+        result = subprocess.run(
+            [sys.executable, "verificar_cambios.py"],
+            capture_output=True,
+            text=True
+        )
+
+        print(result.stdout)
+        print(result.stderr)
+
+        print("✅ PROCESO TERMINADO")
+
+        return "Proceso ejecutado OK"
+
+    except Exception as e:
+        print("❌ ERROR:", e)
+        return "Error en proceso", 500
+
+# =============================
 # RUN
 # =============================
 if __name__ == "__main__":
