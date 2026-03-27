@@ -203,4 +203,5 @@ def procesar():
     print("✅ PROCESO TERMINADO")
 
 
-procesar()
+if __name__ == "__main__":
+    procesar()
