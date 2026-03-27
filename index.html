@@ -251,8 +251,15 @@ let fechaHoy = obtenerFechaHoy();
 let avisosVistos = localStorage.getItem("avisos_vistos_"+fechaHoy) === "true";
 
 fetch("datos.json")
-.then(res=>res.json())
+.then(res=>{
+    if(res.status === 403){
+        window.location.href="/";
+        return null;
+    }
+    return res.json();
+})
 .then(data=>{
+    if(!data) return;
 datosGlobal=data;
 mostrar(datosGlobal);
 generarAvisos();
