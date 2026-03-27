@@ -287,7 +287,9 @@ inactivos++;
 activos++;
 }
 
-if(p.dias_cumple && p.dias_cumple<=7){
+let diasCumple = parseInt(p.dias_cumple);
+
+if(!isNaN(diasCumple) && diasCumple >= 0 && diasCumple <= 7){
 cumples++;
 }
 
