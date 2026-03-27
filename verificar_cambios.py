@@ -116,6 +116,7 @@ for row in data:
 # =========================
 
 if cambios_detectados:
-    sys.exit(1)
+    os.system("python vincula_pdfs_sheets.py")
+    os.system("python contratos_fecha.py")
 else:
     sys.exit(0)
