@@ -125,50 +125,40 @@ for i, row in enumerate(data, start=2):
 
         link = f"https://drive.google.com/file/d/{file_id}/view"
 
-        # =========================
         # PSI
-        # =========================
-        if "PSICOSENSOTECNICO" in nombre_archivo:
+if "PSICOSENSOTECNICO" in nombre_archivo:
+    col = col_index.get("PDF PSI")
+    valor_actual = str(row.get("PDF PSI", "")).strip()
+    if col and "drive.google.com" not in valor_actual:
+        sheet.update_cell(i, col, link)
 
-            col = col_index.get("PDF PSI")
-            if col and not row.get("PDF PSI"):
-                sheet.update_cell(i, col, link)
+# LICENCIA
+elif nombre_archivo.startswith("LC"):
+    col = col_index.get("PDF LC")
+    valor_actual = str(row.get("PDF LC", "")).strip()
+    if col and "drive.google.com" not in valor_actual:
+        sheet.update_cell(i, col, link)
 
-        # =========================
-        # LICENCIA
-        # =========================
-        elif nombre_archivo.startswith("LC"):
+# INFORME
+elif "INFORME" in nombre_archivo:
+    col = col_index.get("PDF INFORME")
+    valor_actual = str(row.get("PDF INFORME", "")).strip()
+    if col and "drive.google.com" not in valor_actual:
+        sheet.update_cell(i, col, link)
 
-            col = col_index.get("PDF LC")
-            if col and not row.get("PDF LC"):
-                sheet.update_cell(i, col, link)
+# CONTRATO
+elif nombre_archivo.startswith("CT"):
+    col = col_index.get("PDF CT")
+    valor_actual = str(row.get("PDF CT", "")).strip()
+    if col and "drive.google.com" not in valor_actual:
+        sheet.update_cell(i, col, link)
 
-        # =========================
-        # INFORME
-        # =========================
-        elif "INFORME" in nombre_archivo:
-
-            col = col_index.get("PDF INFORME")
-            if col and not row.get("PDF INFORME"):
-                sheet.update_cell(i, col, link)
-
-        # =========================
-        # CONTRATO
-        # =========================
-        elif nombre_archivo.startswith("CT"):
-
-            col = col_index.get("PDF CT")
-            if col and not row.get("PDF CT"):
-                sheet.update_cell(i, col, link)
-
-        # =========================
-        # CI
-        # =========================
-        elif "CI" in nombre_archivo:
-
-            col = col_index.get("PDF CI")
-            if col and not row.get("PDF CI"):
-                sheet.update_cell(i, col, link)
+# CI
+elif "CI" in nombre_archivo:
+    col = col_index.get("PDF CI")
+    valor_actual = str(row.get("PDF CI", "")).strip()
+    if col and "drive.google.com" not in valor_actual:
+        sheet.update_cell(i, col, link)
 
     print("✅ Actualizado\n")
 
