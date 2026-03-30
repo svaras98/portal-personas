@@ -159,12 +159,12 @@ def generar_json():
             "cumple": cumple.strftime("%d/%m/%Y") if cumple else "",
             "dias_cumple": calcular_dias_cumple(cumple),
 
-            "pdfs": {
-                  "ci": str(row.get("PDF CI", "")).strip(),
-                  "contrato": str(row.get("PDF CT", "")).strip(),
-                  "psi": str(row.get("PDF PSI", "")).strip(),
-                  "lc": str(row.get("PDF LC", "")).strip(),
-                  "informe": str(row.get("PDF INFORME", "")).strip()
+           "pdfs": {
+                "ci": str(row.get("PDF CI", "")).strip(),
+                "contrato": str(row.get("PDF CT", "")).strip(),
+                "psi": str(row.get("PDF PSI", "")).strip(),
+                "lc": str(row.get("PDF LC", "")).strip(),
+                "informe": str(row.get("PDF INFORME", "")).strip()
             }
         }
 
