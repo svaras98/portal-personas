@@ -56,30 +56,29 @@
         }
 
         a {
-         display: block;
-         margin: 8px 0;
-         padding: 10px;
-         background: #1c7cbc;
-         color: white;
-         text-decoration: none;
-         border-radius: 6px;
-         text-align: center;
-         transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background: #1c7cbc;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
         }
 
         a:hover {
-         background: #145a8a;
-         transform: scale(1.05);
-         box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
+            background: #145a8a;
+            transform: scale(1.05);
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
         }
-
     </style>
 </head>
 
 <body>
 
 <div class="volver">
-<button onclick="volver()">← Volver a Personas</button>
+    <button onclick="volver()">← Volver a Personas</button>
 </div>
 
 <div class="card" id="detalle"></div>
@@ -87,7 +86,7 @@
 <script>
 
 function volver(){
-    window.location.href="index.html";
+    window.location.href = "index.html";
 }
 
 function getID(){
@@ -95,7 +94,9 @@ function getID(){
     return params.get("id");
 }
 
-// --- FUNCIÓN CORREGIDA ---
+// =============================
+// CALCULAR DÍAS CUMPLE
+// =============================
 function calcularDiasCumple(cumpleStr) {
     if (!cumpleStr) return "N/A";
 
@@ -122,10 +123,13 @@ function calcularDiasCumple(cumpleStr) {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
+// =============================
+// FETCH DATOS
+// =============================
 fetch("datos.json")
 .then(res => {
     if(res.status === 403){
-        window.location.href="/";
+        window.location.href = "/";
         return null;
     }
     return res.json();
@@ -134,56 +138,84 @@ fetch("datos.json")
 
     if(!data) return;
 
-      let id = getID();
-      let persona = data.find(p => p.id == id);
+    let id = getID();
+    let persona = data.find(p => p.id == id);
 
-      let diasMostrar = persona.dias;
+    // 🔥 VALIDAR EXISTENCIA
+    if (!persona) {
+        document.getElementById("detalle").innerHTML = `
+            <h2>Error</h2>
+            <p style="text-align:center;">Persona no encontrada</p>
+        `;
+        return;
+    }
 
-      if (persona.dias === "INDEFINIDO") {
-          diasMostrar = "∞";
-      }
+    // 🔥 BLOQUEAR INACTIVO
+    if (persona.estado === "INACTIVO") {
+        document.getElementById("detalle").innerHTML = `
+            <h2>${persona.nombre}</h2>
+            <p style="color:red; font-weight:bold; text-align:center;">
+            🚫 Esta persona está INACTIVA
+            </p>
 
-      let nombres = {
-          ci: "Ver CI (PDF CI)",
-          contrato: "Ver Contrato (PDF CT)",
-          psi: "Ver PSI (PDF PSI)",
-          lc: "Ver Licencia (PDF LC)",
-          informe: "Ver Informe (PDF INFORME)"
-      };
+            <div style="text-align:center; margin-top:20px;">
+                <button onclick="volver()" 
+                style="padding:8px 14px;background:#1c7cbc;color:white;border:none;border-radius:6px;cursor:pointer;">
+                    Volver
+                </button>
+            </div>
+        `;
+        return;
+    }
 
-      // 🔥 LIMPIEZA REAL DEL DATO
-      let cumpleLimpio = persona.cumple ? persona.cumple.replace(/[^0-9\/]/g, "").trim() : "";
+    let diasMostrar = persona.dias;
 
-      let diasCumple = calcularDiasCumple(cumpleLimpio);
+    if (persona.dias === "INDEFINIDO") {
+        diasMostrar = "∞";
+    }
 
-      let html = `
-          <h2>${persona.nombre.trim()}</h2>
+    let nombres = {
+        ci: "Ver CI (PDF CI)",
+        contrato: "Ver Contrato (PDF CT)",
+        psi: "Ver PSI (PDF PSI)",
+        lc: "Ver Licencia (PDF LC)",
+        informe: "Ver Informe (PDF INFORME)"
+    };
 
-          <div class="info">
-              <p><b>RUT:</b> ${persona.rut}</p>
-              <p><b>Tipo:</b> ${persona.tipo}</p>
-              <p><b>Días Vencimiento de contrato:</b> ${diasMostrar}</p>
-              <p><b>Cumpleaños:</b> ${cumpleLimpio || "No registrado"}</p>
-              <p><b>Días Para Su Cumpleaños:</b> ${diasCumple} días</p>
-          </div>
+    let cumpleLimpio = persona.cumple 
+        ? persona.cumple.replace(/[^0-9\/]/g, "").trim() 
+        : "";
 
-          <hr>
+    let diasCumple = calcularDiasCumple(cumpleLimpio);
 
-          <div class="pdfs">
-              <h3>Documentos</h3>
-      `;
+    let html = `
+        <h2>${persona.nombre.trim()}</h2>
 
-      for (let key in persona.pdfs){
-          let link = persona.pdfs[key];
+        <div class="info">
+            <p><b>RUT:</b> ${persona.rut}</p>
+            <p><b>Tipo:</b> ${persona.tipo}</p>
+            <p><b>Días Vencimiento de contrato:</b> ${diasMostrar}</p>
+            <p><b>Cumpleaños:</b> ${cumpleLimpio || "No registrado"}</p>
+            <p><b>Días Para Su Cumpleaños:</b> ${diasCumple} días</p>
+        </div>
 
-          if (link && link !== "#"){
-              html += `<a href="${link}" target="_blank">${nombres[key]}</a>`;
-          }
-      }
+        <hr>
 
-      html += `</div>`;
+        <div class="pdfs">
+            <h3>Documentos</h3>
+    `;
 
-      document.getElementById("detalle").innerHTML = html;
+    for (let key in persona.pdfs){
+        let link = persona.pdfs[key];
+
+        if (link && link !== "#"){
+            html += `<a href="${link}" target="_blank">${nombres[key]}</a>`;
+        }
+    }
+
+    html += `</div>`;
+
+    document.getElementById("detalle").innerHTML = html;
 
 });
 
