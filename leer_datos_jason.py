@@ -53,7 +53,7 @@ def calcular_dias_cumple(cumple):
         return ""
 
 
-# 🔥 FUNCIÓN CLAVE (ARREGLO)
+# 🔥 FUNCIÓN CLAVE
 def limpiar_link(valor):
     if not valor:
         return ""
@@ -84,7 +84,7 @@ def generar_json():
         cumple_raw = row.get("CUMPLEAÑOS")
         fecha_raw = row.get("FECHA DE CONTRATO")
 
-        # 🔥 PARSEO ROBUSTO DE FECHA DE CUMPLE
+        # PARSEO DE FECHA DE CUMPLE
         cumple = None
         if cumple_raw:
             try:
@@ -148,7 +148,6 @@ def generar_json():
             "cumple": cumple.strftime("%d/%m/%Y") if cumple else "",
             "dias_cumple": calcular_dias_cumple(cumple),
 
-            # 🔥 AQUÍ ESTÁ EL FIX
             "pdfs": {
                 "ci": limpiar_link(row.get("PDF CI", "")),
                 "contrato": limpiar_link(row.get("PDF CT", "")),
@@ -163,15 +162,11 @@ def generar_json():
     with open("datos.json", "w", encoding="utf-8") as f:
         json.dump(datos, f, indent=4, ensure_ascii=False)
 
-    print("✅ datos.json generado correctamente (links limpios)")
+    print("✅ datos.json generado correctamente")
 
 
 # =============================
 # MAIN
 # =============================
-if __name__ == "__main__":
-    generar_json()
-
-
 if __name__ == "__main__":
     generar_json()
