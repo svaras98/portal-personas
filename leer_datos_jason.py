@@ -160,11 +160,11 @@ def generar_json():
             "dias_cumple": calcular_dias_cumple(cumple),
 
             "pdfs": {
-                "ci": limpiar_link(row.get("PDF CI", "")),
-                "contrato": limpiar_link(row.get("PDF CT", "")),
-                "psi": limpiar_link(row.get("PDF PSI", "")),
-                "lc": limpiar_link(row.get("PDF LC", "")),
-                "informe": limpiar_link(row.get("PDF INFORME", ""))
+                  "ci": str(row.get("PDF CI", "")).strip(),
+                  "contrato": str(row.get("PDF CT", "")).strip(),
+                  "psi": str(row.get("PDF PSI", "")).strip(),
+                  "lc": str(row.get("PDF LC", "")).strip(),
+                  "informe": str(row.get("PDF INFORME", "")).strip()
             }
         }
 
