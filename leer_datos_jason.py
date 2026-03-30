@@ -53,19 +53,30 @@ def calcular_dias_cumple(cumple):
         return ""
 
 
-# 🔥 FUNCIÓN CLAVE
 def limpiar_link(valor):
     if not valor:
         return ""
 
     valor = str(valor).strip()
 
-    # Solo aceptar links reales de Google Drive
-    if "drive.google.com" not in valor:
-        return ""
+    # 🔥 Caso 1: link directo normal
+    if "drive.google.com" in valor:
+        return valor
 
-    return valor
+    # 🔥 Caso 2: fórmula tipo HYPERLINK
+    if "HYPERLINK" in valor.upper():
+        try:
+            # extrae el link entre comillas
+            inicio = valor.find('"') + 1
+            fin = valor.find('"', inicio)
+            link = valor[inicio:fin]
 
+            if "drive.google.com" in link:
+                return link
+        except:
+            return ""
+
+    return ""
 
 # =============================
 # GENERAR JSON
