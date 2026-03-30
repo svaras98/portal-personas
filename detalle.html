@@ -176,7 +176,7 @@ fetch("datos.json")
       for (let key in persona.pdfs){
           let link = persona.pdfs[key];
 
-          if (link){
+          if (link && link !== "#"){
               html += `<a href="${link}" target="_blank">${nombres[key]}</a>`;
           }
       }
