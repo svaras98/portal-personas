@@ -28,6 +28,9 @@ client = gspread.authorize(CREDS)
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
 
+# =============================
+# FUNCIONES AUXILIARES
+# =============================
 def calcular_dias_contrato(fecha):
     hoy = datetime.today()
     return (fecha - hoy).days + 1
@@ -50,6 +53,23 @@ def calcular_dias_cumple(cumple):
         return ""
 
 
+# 🔥 FUNCIÓN CLAVE (ARREGLO)
+def limpiar_link(valor):
+    if not valor:
+        return ""
+
+    valor = str(valor).strip()
+
+    # Solo aceptar links reales de Google Drive
+    if "drive.google.com" not in valor:
+        return ""
+
+    return valor
+
+
+# =============================
+# GENERAR JSON
+# =============================
 def generar_json():
 
     datos_sheet = sheet.get_all_records()
@@ -128,12 +148,13 @@ def generar_json():
             "cumple": cumple.strftime("%d/%m/%Y") if cumple else "",
             "dias_cumple": calcular_dias_cumple(cumple),
 
+            # 🔥 AQUÍ ESTÁ EL FIX
             "pdfs": {
-                "ci": row.get("PDF CI", ""),
-                "contrato": row.get("PDF CT", ""),
-                "psi": row.get("PDF PSI", ""),
-                "lc": row.get("PDF LC", ""),
-                "informe": row.get("PDF INFORME", "")
+                "ci": limpiar_link(row.get("PDF CI", "")),
+                "contrato": limpiar_link(row.get("PDF CT", "")),
+                "psi": limpiar_link(row.get("PDF PSI", "")),
+                "lc": limpiar_link(row.get("PDF LC", "")),
+                "informe": limpiar_link(row.get("PDF INFORME", ""))
             }
         }
 
@@ -142,7 +163,14 @@ def generar_json():
     with open("datos.json", "w", encoding="utf-8") as f:
         json.dump(datos, f, indent=4, ensure_ascii=False)
 
-    print("✅ datos.json generado desde Google Sheets")
+    print("✅ datos.json generado correctamente (links limpios)")
+
+
+# =============================
+# MAIN
+# =============================
+if __name__ == "__main__":
+    generar_json()
 
 
 if __name__ == "__main__":
