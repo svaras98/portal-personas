@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, session, send_from_directory, send_file, jsonify
+from flask import Flask, request, redirect, session, send_from_directory, send_file, Response
 import json
 import os
 from datetime import timedelta, datetime
@@ -7,6 +7,7 @@ from db import guardar_estado
 
 import gspread
 from google.oauth2.service_account import Credentials
+import requests
 
 app = Flask(__name__)
 app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
@@ -136,25 +137,35 @@ def datos():
     return send_file(os.path.join(BASE_DIR, "datos.json"))
 
 # =============================
-# 🔥 DESCARGAR PERSONA
+# DESCARGAR ARCHIVO 🔥
 # =============================
-@app.route("/descargar/<int:id>")
-def descargar(id):
+@app.route("/descargar")
+def descargar():
 
     if "user" not in session:
         return {"error": "no autorizado"}, 403
 
-    generar_json()
+    url = request.args.get("url")
 
-    with open(os.path.join(BASE_DIR, "datos.json"), "r", encoding="utf-8") as f:
-        data = json.load(f)
+    if not url:
+        return "URL no válida", 400
 
-    persona = next((p for p in data if p["id"] == id), None)
+    try:
+        r = requests.get(url)
 
-    if not persona:
-        return {"error": "no encontrado"}, 404
+        filename = url.split("/")[-1]
 
-    return jsonify(persona)
+        return Response(
+            r.content,
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}"
+            },
+            content_type=r.headers.get("Content-Type", "application/octet-stream")
+        )
+
+    except Exception as e:
+        print("Error descarga:", e)
+        return "Error al descargar", 500
 
 # =============================
 # CAMBIAR ESTADO
