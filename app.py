@@ -41,9 +41,7 @@ sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 # =============================
 @app.before_request
 def validar_sesion():
-
     if "user" in session:
-
         recordar = session.get("recordar", False)
         login_time = session.get("login_time")
 
@@ -62,7 +60,7 @@ def cargar_usuarios():
         return json.load(f)["usuarios"]
 
 # =============================
-# LOGIN (CON NEXT 🔥)
+# LOGIN
 # =============================
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -79,7 +77,6 @@ def login():
         return redirect("/index.html")
 
     if request.method == "POST":
-
         user = request.form["usuario"].lower()
         password = request.form["password"]
         recordar = request.form.get("recordar")
@@ -153,7 +150,6 @@ def desactivar(rut):
         datos_sheet = sheet.get_all_records()
 
         for i, row in enumerate(datos_sheet, start=2):
-
             rut_sheet = str(row.get("CARNET", "")).strip()
 
             if rut_sheet == rut:
@@ -177,7 +173,7 @@ def logout():
     return redirect("/")
 
 # =============================
-# AUTO PROCESO 🔥 (AÑADIDO)
+# AUTO PROCESO 🔥 (ARREGLADO)
 # =============================
 @app.route("/auto-proceso")
 def auto_proceso():
@@ -188,24 +184,26 @@ def auto_proceso():
     print("🚀 INICIANDO AUTOMATIZACIÓN COMPLETA")
 
     try:
+        script_path = os.path.join(BASE_DIR, "automatizar_todo.py")
+
         resultado = subprocess.run(
-            [sys.executable, "automatizar_todo.py"],
+            [sys.executable, script_path],
             capture_output=True,
             text=True
         )
 
         salida = f"""
-        ===== STDOUT =====
-        {resultado.stdout}
+===== STDOUT =====
+{resultado.stdout}
 
-        ===== STDERR =====
-        {resultado.stderr}
-        """
+===== STDERR =====
+{resultado.stderr}
+"""
 
         if resultado.returncode != 0:
-            return f"<pre>❌ ERROR EN PIPELINE\n\n{salida}</pre>", 500
+            return f"<pre>❌ ERROR EN PIPELINE\n{salida}</pre>", 500
 
-        return f"<pre>✅ PROCESO COMPLETADO\n\n{salida}</pre>"
+        return f"<pre>✅ PROCESO COMPLETADO\n{salida}</pre>"
 
     except Exception as e:
         print("❌ ERROR GRAVE:", e)
@@ -216,4 +214,4 @@ def auto_proceso():
 # =============================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)
