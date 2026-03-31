@@ -11,7 +11,7 @@ from google.oauth2.service_account import Credentials
 app = Flask(__name__)
 app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
 
-# ⏱️ TIEMPO DE INICIO DEL SERVIDOR (CLAVE)
+# ⏱️ TIEMPO DE INICIO DEL SERVIDOR
 SERVER_START = datetime.utcnow()
 
 app.permanent_session_lifetime = timedelta(days=30)
@@ -39,7 +39,7 @@ client = gspread.authorize(CREDS)
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
 # =============================
-# VALIDAR SESIÓN EN CADA REQUEST 🔥
+# VALIDAR SESIÓN
 # =============================
 @app.before_request
 def validar_sesion():
@@ -52,7 +52,6 @@ def validar_sesion():
         if not recordar and login_time:
             login_time = datetime.fromisoformat(login_time)
 
-            # 🔥 SI EL SERVIDOR SE REINICIÓ → LOGOUT
             if login_time < SERVER_START:
                 session.clear()
                 return redirect("/")
@@ -65,12 +64,16 @@ def cargar_usuarios():
         return json.load(f)["usuarios"]
 
 # =============================
-# LOGIN
+# LOGIN 🔥 MODIFICADO
 # =============================
 @app.route("/", methods=["GET", "POST"])
 def login():
 
+    # 🔥 SI YA ESTÁ LOGEADO → REDIRIGE A DONDE IBA
     if "user" in session:
+        next_url = request.args.get("next")
+        if next_url:
+            return redirect(next_url)
         return redirect("/index.html")
 
     if request.method == "POST":
@@ -86,13 +89,16 @@ def login():
 
                 session["user"] = user
                 session["recordar"] = bool(recordar)
-
-                # ⏱️ guardar momento de login
                 session["login_time"] = datetime.utcnow().isoformat()
-
                 session.permanent = bool(recordar)
 
-                return redirect("/index.html")
+                # 🔥 CLAVE: REDIRIGIR AL DESTINO ORIGINAL
+                next_url = request.args.get("next")
+
+                if next_url:
+                    return redirect(next_url)
+                else:
+                    return redirect("/index.html")
 
         return redirect("/?error=1")
 
@@ -104,16 +110,17 @@ def login():
 @app.route("/index.html")
 def index():
     if "user" not in session:
-        return redirect("/")
+        return redirect("/?next=/index.html")
     return send_from_directory(BASE_DIR, "index.html")
 
 # =============================
-# DETALLE
+# DETALLE 🔥 MODIFICADO
 # =============================
 @app.route("/detalle.html")
 def detalle():
     if "user" not in session:
-        return redirect("/")
+        # 🔥 GUARDAR URL ORIGINAL
+        return redirect("/?next=" + request.url)
     return send_from_directory(BASE_DIR, "detalle.html")
 
 # =============================
@@ -168,26 +175,6 @@ def desactivar(rut):
 def logout():
     session.clear()
     return redirect("/")
-
-# =============================
-# AUTO PROCESO (CRON) 🔥
-# =============================
-@app.route("/auto-proceso")
-def auto_proceso():
-
-    import subprocess
-    import sys
-
-    print("🚀 INICIANDO PROCESO AUTOMÁTICO")
-
-    try:
-        # Esto ejecuta el script y manda todo stdout/stderr directo a los logs de Render
-        subprocess.run([sys.executable, "verificar_cambios.py"], check=True)
-        print("✅ PROCESO TERMINADO")
-        return "Proceso ejecutado OK"
-    except subprocess.CalledProcessError as e:
-        print("❌ ERROR EN SCRIPT:", e)
-        return "Error en proceso", 500
 
 # =============================
 # RUN
