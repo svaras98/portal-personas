@@ -55,23 +55,36 @@
             margin-top: 25px;
         }
 
-        a {
-            display: block;
+        .doc-row {
+            display: flex;
+            gap: 10px;
             margin: 8px 0;
+        }
+
+        .btn {
+            flex: 1;
             padding: 10px;
             background: #1c7cbc;
             color: white;
             text-decoration: none;
             border-radius: 6px;
             text-align: center;
-            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+            transition: 0.2s;
         }
 
-        a:hover {
+        .btn:hover {
             background: #145a8a;
-            transform: scale(1.05);
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
+            transform: scale(1.03);
         }
+
+        .btn-download {
+            background: #16a34a;
+        }
+
+        .btn-download:hover {
+            background: #15803d;
+        }
+
     </style>
 </head>
 
@@ -124,33 +137,11 @@ function calcularDiasCumple(cumpleStr) {
 }
 
 // =============================
-// 🔥 DESCARGAR FUNCIÓN
-// =============================
-function descargar(id){
-    fetch(`/descargar/${id}`)
-    .then(res => res.json())
-    .then(data => {
-
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `persona_${id}.json`;
-        a.click();
-
-        window.URL.revokeObjectURL(url);
-    });
-}
-
-// =============================
 // FETCH DATOS
 // =============================
 fetch("datos.json")
 .then(res => {
 
-    // 🔥 REDIRECCIÓN INTELIGENTE PARA QR
     if(res.status === 403){
         let id = getID();
         window.location.href = "/?next=detalle.html?id=" + id;
@@ -166,7 +157,6 @@ fetch("datos.json")
     let id = getID();
     let persona = data.find(p => p.id == id);
 
-    // 🔥 VALIDAR EXISTENCIA
     if (!persona) {
         document.getElementById("detalle").innerHTML = `
             <h2>Error</h2>
@@ -175,36 +165,24 @@ fetch("datos.json")
         return;
     }
 
-    // 🔥 BLOQUEAR INACTIVO
     if (persona.estado === "INACTIVO") {
         document.getElementById("detalle").innerHTML = `
             <h2>${persona.nombre}</h2>
             <p style="color:red; font-weight:bold; text-align:center;">
             🚫 Esta persona está INACTIVA
             </p>
-
-            <div style="text-align:center; margin-top:20px;">
-                <button onclick="volver()" 
-                style="padding:8px 14px;background:#1c7cbc;color:white;border:none;border-radius:6px;cursor:pointer;">
-                    Volver
-                </button>
-            </div>
         `;
         return;
     }
 
-    let diasMostrar = persona.dias;
-
-    if (persona.dias === "INDEFINIDO") {
-        diasMostrar = "∞";
-    }
+    let diasMostrar = persona.dias === "INDEFINIDO" ? "∞" : persona.dias;
 
     let nombres = {
-        ci: "Ver CI (PDF CI)",
-        contrato: "Ver Contrato (PDF CT)",
-        psi: "Ver PSI (PDF PSI)",
-        lc: "Ver Licencia (PDF LC)",
-        informe: "Ver Informe (PDF INFORME)"
+        ci: "CI",
+        contrato: "Contrato",
+        psi: "PSI",
+        lc: "Licencia",
+        informe: "Informe"
     };
 
     let cumpleLimpio = persona.cumple 
@@ -234,21 +212,21 @@ fetch("datos.json")
         let link = persona.pdfs[key];
 
         if (link && link !== "#"){
-            html += `<a href="${link}" target="_blank">${nombres[key]}</a>`;
+            html += `
+                <div class="doc-row">
+                    <a href="${link}" target="_blank" class="btn">
+                        Ver ${nombres[key]}
+                    </a>
+
+                    <a href="${link}" download class="btn btn-download">
+                        Descargar ${nombres[key]}
+                    </a>
+                </div>
+            `;
         }
     }
 
-    // 🔥 BOTÓN DESCARGAR
-    html += `
-        </div>
-
-        <div style="margin-top:20px;">
-            <button onclick="descargar(${persona.id})"
-            style="width:100%;padding:10px;background:#16a34a;color:white;border:none;border-radius:6px;cursor:pointer;">
-                ⬇ Descargar ficha completa
-            </button>
-        </div>
-    `;
+    html += `</div>`;
 
     document.getElementById("detalle").innerHTML = html;
 
