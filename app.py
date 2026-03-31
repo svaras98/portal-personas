@@ -189,7 +189,7 @@ def auto_proceso():
 
     try:
         resultado = subprocess.run(
-            [sys.executable, "automizar_todo.py"],
+            [sys.executable, "automatizar_todo.py"],
             capture_output=True,
             text=True
         )
