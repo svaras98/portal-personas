@@ -94,9 +94,6 @@ function getID(){
     return params.get("id");
 }
 
-// =============================
-// CALCULAR DÍAS CUMPLE
-// =============================
 function calcularDiasCumple(cumpleStr) {
     if (!cumpleStr) return "N/A";
 
@@ -123,13 +120,9 @@ function calcularDiasCumple(cumpleStr) {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
-// =============================
-// FETCH DATOS
-// =============================
 fetch("datos.json")
 .then(res => {
 
-    // 🔥 REDIRECCIÓN INTELIGENTE PARA QR
     if(res.status === 403){
         let id = getID();
         window.location.href = "/?next=detalle.html?id=" + id;
@@ -145,7 +138,6 @@ fetch("datos.json")
     let id = getID();
     let persona = data.find(p => p.id == id);
 
-    // 🔥 VALIDAR EXISTENCIA
     if (!persona) {
         document.getElementById("detalle").innerHTML = `
             <h2>Error</h2>
@@ -154,29 +146,17 @@ fetch("datos.json")
         return;
     }
 
-    // 🔥 BLOQUEAR INACTIVO
     if (persona.estado === "INACTIVO") {
         document.getElementById("detalle").innerHTML = `
             <h2>${persona.nombre}</h2>
             <p style="color:red; font-weight:bold; text-align:center;">
             🚫 Esta persona está INACTIVA
             </p>
-
-            <div style="text-align:center; margin-top:20px;">
-                <button onclick="volver()" 
-                style="padding:8px 14px;background:#1c7cbc;color:white;border:none;border-radius:6px;cursor:pointer;">
-                    Volver
-                </button>
-            </div>
         `;
         return;
     }
 
-    let diasMostrar = persona.dias;
-
-    if (persona.dias === "INDEFINIDO") {
-        diasMostrar = "∞";
-    }
+    let diasMostrar = persona.dias === "INDEFINIDO" ? "∞" : persona.dias;
 
     let nombres = {
         ci: "Ver CI (PDF CI)",
