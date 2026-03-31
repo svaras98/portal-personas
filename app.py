@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, session, send_from_directory, send_file
+                                                                                                                          from flask import Flask, request, redirect, session, send_from_directory, send_file
 import json
 import os
 from datetime import timedelta, datetime
@@ -62,18 +62,16 @@ def cargar_usuarios():
         return json.load(f)["usuarios"]
 
 # =============================
-# LOGIN 🔥 CORREGIDO FULL
+# LOGIN (CON NEXT 🔥)
 # =============================
 @app.route("/", methods=["GET", "POST"])
 def login():
 
-    # 🔥 GUARDAR NEXT EN SESSION SI VIENE
     if request.method == "GET":
         next_url = request.args.get("next")
         if next_url:
             session["next"] = next_url
 
-    # 🔥 SI YA ESTÁ LOGEADO
     if "user" in session:
         next_url = session.pop("next", None)
         if next_url:
@@ -96,7 +94,6 @@ def login():
                 session["login_time"] = datetime.utcnow().isoformat()
                 session.permanent = bool(recordar)
 
-                # 🔥 USAR SESSION (NO request.args)
                 next_url = session.pop("next", None)
 
                 if next_url:
@@ -118,7 +115,7 @@ def index():
     return send_from_directory(BASE_DIR, "index.html")
 
 # =============================
-# DETALLE 🔥
+# DETALLE
 # =============================
 @app.route("/detalle.html")
 def detalle():
@@ -184,4 +181,4 @@ def logout():
 # =============================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port).                                                                                                                          
+    app.run(host="0.0.0.0", port=port)
