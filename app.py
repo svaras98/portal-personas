@@ -189,19 +189,27 @@ def auto_proceso():
 
     try:
         resultado = subprocess.run(
-            [sys.executable, "automatizar_todo.py"],
+            [sys.executable, "automizar_todo.py"],
             capture_output=True,
             text=True
         )
 
-        print("STDOUT:\n", resultado.stdout)
-        print("STDERR:\n", resultado.stderr)
+        salida = f"""
+        ===== STDOUT =====
+        {resultado.stdout}
 
-        return f"<pre>{resultado.stdout}</pre>"
+        ===== STDERR =====
+        {resultado.stderr}
+        """
+
+        if resultado.returncode != 0:
+            return f"<pre>❌ ERROR EN PIPELINE\n\n{salida}</pre>", 500
+
+        return f"<pre>✅ PROCESO COMPLETADO\n\n{salida}</pre>"
 
     except Exception as e:
-        print("❌ ERROR:", e)
-        return "Error en proceso", 500
+        print("❌ ERROR GRAVE:", e)
+        return f"<pre>ERROR: {str(e)}</pre>", 500
 
 # =============================
 # RUN
