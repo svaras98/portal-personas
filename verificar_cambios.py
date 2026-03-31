@@ -18,8 +18,9 @@ SCOPES = [
 
 SHEET_ID = "11omZV-J8sn_qZ7htmaF-9tgCGwh_fwcklGchlGOA0RI"
 SHEET_NAME = "Hoja 1"
-
 FOLDER_ID = "1MAleZ8QRbl7ldXYlORErhGQP_ptnYIxq"
+
+ESTADO_FILE = "estado_cambios.json"
 
 # =========================
 # AUTH
@@ -33,7 +34,6 @@ else:
 
 client = gspread.authorize(creds)
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
-
 service = build("drive", "v3", credentials=creds)
 
 print("✅ Conectado a Google Drive + Sheets\n")
@@ -61,20 +61,34 @@ def buscar_carpeta(nombre):
     return files[0]["id"] if files else None
 
 
-def contar_pdfs_drive(folder_id):
+def obtener_ultima_modificacion(folder_id):
     query = f"'{folder_id}' in parents and mimeType='application/pdf' and trashed=false"
 
     results = service.files().list(
         q=query,
-        fields="files(id,name)"
+        fields="files(name, modifiedTime)"
     ).execute()
 
-    return len(results.get("files", []))
+    archivos = results.get("files", [])
+
+    if not archivos:
+        return None
+
+    # 🔥 obtener la más reciente
+    ultima = max(file["modifiedTime"] for file in archivos)
+    return ultima
 
 
-def contar_pdfs_sheet(row):
-    columnas = ["PDF CI", "PDF CT", "PDF PSI", "PDF LC", "PDF INFORME"]
-    return sum(1 for col in columnas if row.get(col))
+def cargar_estado():
+    if not os.path.exists(ESTADO_FILE):
+        return {}
+    with open(ESTADO_FILE, "r") as f:
+        return json.load(f)
+
+
+def guardar_estado(estado):
+    with open(ESTADO_FILE, "w") as f:
+        json.dump(estado, f, indent=4)
 
 
 # =========================
@@ -84,6 +98,9 @@ def contar_pdfs_sheet(row):
 def verificar():
 
     data = sheet.get_all_records()
+    estado_anterior = cargar_estado()
+    nuevo_estado = {}
+
     cambios_detectados = False
 
     for row in data:
@@ -99,22 +116,31 @@ def verificar():
             print("❌ Carpeta no encontrada\n")
             continue
 
-        pdf_drive = contar_pdfs_drive(carpeta)
-        pdf_sheet = contar_pdfs_sheet(row)
+        ultima_mod_drive = obtener_ultima_modificacion(carpeta)
 
-        print("Drive:", pdf_drive, "| Sheet:", pdf_sheet)
+        if not ultima_mod_drive:
+            print("⚠️ Sin PDFs\n")
+            continue
 
-        if pdf_drive > pdf_sheet:
-            print("🚨 CAMBIOS DETECTADOS\n")
+        print("Última modificación Drive:", ultima_mod_drive)
+
+        ultima_guardada = estado_anterior.get(nombre_busqueda)
+
+        if ultima_guardada != ultima_mod_drive:
+            print("🚨 CAMBIO DETECTADO\n")
             cambios_detectados = True
         else:
             print("✔ Sin cambios\n")
+
+        nuevo_estado[nombre_busqueda] = ultima_mod_drive
+
+    guardar_estado(nuevo_estado)
 
     return cambios_detectados
 
 
 # =========================
-# EJECUTAR FLUJO COMPLETO
+# PIPELINE
 # =========================
 
 def ejecutar_pipeline():
@@ -147,7 +173,7 @@ if __name__ == "__main__":
 
     if cambios:
         ejecutar_pipeline()
-        sys.exit(1)  # útil para cron/logs
+        sys.exit(1)
     else:
         print("✔ Todo actualizado, no se requieren cambios\n")
         sys.exit(0)
