@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, session, send_from_directory, send_file
+from flask import Flask, request, redirect, session, send_from_directory, send_file, jsonify
 import json
 import os
 from datetime import timedelta, datetime
@@ -62,18 +62,16 @@ def cargar_usuarios():
         return json.load(f)["usuarios"]
 
 # =============================
-# LOGIN 🔥 CORREGIDO FULL
+# LOGIN
 # =============================
 @app.route("/", methods=["GET", "POST"])
 def login():
 
-    # 🔥 GUARDAR NEXT EN SESSION SI VIENE
     if request.method == "GET":
         next_url = request.args.get("next")
         if next_url:
             session["next"] = next_url
 
-    # 🔥 SI YA ESTÁ LOGEADO
     if "user" in session:
         next_url = session.pop("next", None)
         if next_url:
@@ -96,7 +94,6 @@ def login():
                 session["login_time"] = datetime.utcnow().isoformat()
                 session.permanent = bool(recordar)
 
-                # 🔥 USAR SESSION (NO request.args)
                 next_url = session.pop("next", None)
 
                 if next_url:
@@ -118,7 +115,7 @@ def index():
     return send_from_directory(BASE_DIR, "index.html")
 
 # =============================
-# DETALLE 🔥
+# DETALLE
 # =============================
 @app.route("/detalle.html")
 def detalle():
@@ -137,6 +134,27 @@ def datos():
 
     generar_json()
     return send_file(os.path.join(BASE_DIR, "datos.json"))
+
+# =============================
+# 🔥 DESCARGAR PERSONA
+# =============================
+@app.route("/descargar/<int:id>")
+def descargar(id):
+
+    if "user" not in session:
+        return {"error": "no autorizado"}, 403
+
+    generar_json()
+
+    with open(os.path.join(BASE_DIR, "datos.json"), "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    persona = next((p for p in data if p["id"] == id), None)
+
+    if not persona:
+        return {"error": "no encontrado"}, 404
+
+    return jsonify(persona)
 
 # =============================
 # CAMBIAR ESTADO
