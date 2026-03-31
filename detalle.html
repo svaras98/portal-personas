@@ -124,6 +124,27 @@ function calcularDiasCumple(cumpleStr) {
 }
 
 // =============================
+// 🔥 DESCARGAR FUNCIÓN
+// =============================
+function descargar(id){
+    fetch(`/descargar/${id}`)
+    .then(res => res.json())
+    .then(data => {
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `persona_${id}.json`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+    });
+}
+
+// =============================
 // FETCH DATOS
 // =============================
 fetch("datos.json")
@@ -217,7 +238,17 @@ fetch("datos.json")
         }
     }
 
-    html += `</div>`;
+    // 🔥 BOTÓN DESCARGAR
+    html += `
+        </div>
+
+        <div style="margin-top:20px;">
+            <button onclick="descargar(${persona.id})"
+            style="width:100%;padding:10px;background:#16a34a;color:white;border:none;border-radius:6px;cursor:pointer;">
+                ⬇ Descargar ficha completa
+            </button>
+        </div>
+    `;
 
     document.getElementById("detalle").innerHTML = html;
 
