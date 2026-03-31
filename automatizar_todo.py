@@ -1,23 +1,32 @@
 import subprocess
+import sys
 
-print("🚀 INICIANDO AUTOMATIZACIÓN...\n")
+def ejecutar_script(script):
+    print(f"\n▶ Ejecutando: {script}")
+    
+    resultado = subprocess.run(["python", script])
+    
+    if resultado.returncode != 0:
+        print(f"❌ Error en {script}")
+        sys.exit(1)  # Detiene todo si algo falla
+    else:
+        print(f"✅ {script} completado correctamente")
 
-# 1. Verificar cambios
-resultado = subprocess.run(["python", "verificar_cambios.py"])
 
-if resultado.returncode == 1:
-    print("🔄 Cambios detectados...\n")
+def main():
+    print("🚀 INICIANDO AUTOMATIZACIÓN...\n")
 
-    # 2. Vincular PDFs
-    subprocess.run(["python", "vincula_pdfs_sheets.py"])
+    # 1. Vincular PDFs (SIEMPRE)
+    ejecutar_script("vincula_pdfs_sheets.py")
 
-    # 3. Leer contratos
-    subprocess.run(["python", "contratos_fecha.py"])
+    # 2. Procesar fechas desde contratos
+    ejecutar_script("contratos_fecha.py")
 
-    # 4. Generar JSON
-    subprocess.run(["python", "leer_datos_jason.py"])
+    # 3. Generar JSON final
+    ejecutar_script("leer_datos_jason.py")
 
-    print("\n✅ TODO ACTUALIZADO")
+    print("\n🎉 TODO ACTUALIZADO CORRECTAMENTE")
 
-else:
-    print("✔ No hay cambios")
+
+if __name__ == "__main__":
+    main()
