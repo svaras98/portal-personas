@@ -50,7 +50,6 @@
         border-radius:5px;
     }
 
-    /* checkbox */
     input[type="checkbox"]{
         width:auto;
         margin-right:6px;
@@ -105,7 +104,6 @@
         color:white;
     }
 
-    /* 🔥 MARCA DE AGUA SV */
     .marcaSV{
         position: fixed;
         bottom: 15px;
@@ -137,7 +135,8 @@
         Usuario o contraseña incorrectos
     </div>
 
-    <form method="POST">
+    <!-- 🔥 IMPORTANTE: action dinámico -->
+    <form method="POST" id="formLogin">
 
         <input type="text" name="usuario" placeholder="Correo" required>
 
@@ -157,14 +156,20 @@
 
 </div>
 
-<!-- 🔥 MARCA -->
 <div class="marcaSV">ⓈⓋ</div>
 
 <script>
 
-// Mostrar error
+// 🔥 CAPTURAR "next" DEL QR
 const params = new URLSearchParams(window.location.search)
+const next = params.get("next")
 
+// 🔥 SI VIENE CON NEXT → MANTENERLO EN EL FORM
+if(next){
+    document.getElementById("formLogin").action = "/?next=" + encodeURIComponent(next)
+}
+
+// Mostrar error
 if (params.get("error") === "1"){
     document.getElementById("error").style.display="block"
 }
@@ -187,10 +192,6 @@ function togglePassword(){
 
 }
 
-</script>
-
-</body>
-</html>
 </script>
 
 </body>
