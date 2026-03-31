@@ -177,6 +177,33 @@ def logout():
     return redirect("/")
 
 # =============================
+# AUTO PROCESO 🔥 (AÑADIDO)
+# =============================
+@app.route("/auto-proceso")
+def auto_proceso():
+
+    import subprocess
+    import sys
+
+    print("🚀 INICIANDO AUTOMATIZACIÓN COMPLETA")
+
+    try:
+        resultado = subprocess.run(
+            [sys.executable, "automatizar_todo.py"],
+            capture_output=True,
+            text=True
+        )
+
+        print("STDOUT:\n", resultado.stdout)
+        print("STDERR:\n", resultado.stderr)
+
+        return f"<pre>{resultado.stdout}</pre>"
+
+    except Exception as e:
+        print("❌ ERROR:", e)
+        return "Error en proceso", 500
+
+# =============================
 # RUN
 # =============================
 if __name__ == "__main__":
