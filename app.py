@@ -11,9 +11,7 @@ from google.oauth2.service_account import Credentials
 app = Flask(__name__)
 app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
 
-# ⏱️ TIEMPO DE INICIO DEL SERVIDOR
 SERVER_START = datetime.utcnow()
-
 app.permanent_session_lifetime = timedelta(days=30)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -64,14 +62,20 @@ def cargar_usuarios():
         return json.load(f)["usuarios"]
 
 # =============================
-# LOGIN 🔥 MODIFICADO
+# LOGIN 🔥 CORREGIDO FULL
 # =============================
 @app.route("/", methods=["GET", "POST"])
 def login():
 
-    # 🔥 SI YA ESTÁ LOGEADO → REDIRIGE A DONDE IBA
-    if "user" in session:
+    # 🔥 GUARDAR NEXT EN SESSION SI VIENE
+    if request.method == "GET":
         next_url = request.args.get("next")
+        if next_url:
+            session["next"] = next_url
+
+    # 🔥 SI YA ESTÁ LOGEADO
+    if "user" in session:
+        next_url = session.pop("next", None)
         if next_url:
             return redirect(next_url)
         return redirect("/index.html")
@@ -92,8 +96,8 @@ def login():
                 session["login_time"] = datetime.utcnow().isoformat()
                 session.permanent = bool(recordar)
 
-                # 🔥 CLAVE: REDIRIGIR AL DESTINO ORIGINAL
-                next_url = request.args.get("next")
+                # 🔥 USAR SESSION (NO request.args)
+                next_url = session.pop("next", None)
 
                 if next_url:
                     return redirect(next_url)
@@ -114,12 +118,11 @@ def index():
     return send_from_directory(BASE_DIR, "index.html")
 
 # =============================
-# DETALLE 🔥 MODIFICADO
+# DETALLE 🔥
 # =============================
 @app.route("/detalle.html")
 def detalle():
     if "user" not in session:
-        # 🔥 GUARDAR URL ORIGINAL
         return redirect("/?next=" + request.url)
     return send_from_directory(BASE_DIR, "detalle.html")
 
