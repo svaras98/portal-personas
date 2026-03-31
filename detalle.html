@@ -128,10 +128,14 @@ function calcularDiasCumple(cumpleStr) {
 // =============================
 fetch("datos.json")
 .then(res => {
+
+    // 🔥 REDIRECCIÓN INTELIGENTE PARA QR
     if(res.status === 403){
-        window.location.href = "/";
+        let id = getID();
+        window.location.href = "/?next=detalle.html?id=" + id;
         return null;
     }
+
     return res.json();
 })
 .then(data => {
