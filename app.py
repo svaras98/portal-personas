@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, session, send_from_directory, send_file, Response
+from flask import Flask, request, redirect, session, send_from_directory, send_file
 import json
 import os
 from datetime import timedelta, datetime
@@ -7,7 +7,6 @@ from db import guardar_estado
 
 import gspread
 from google.oauth2.service_account import Credentials
-import requests
 
 app = Flask(__name__)
 app.secret_key = "Empresacoldcontrolcontactocoldcontrol"
@@ -63,16 +62,18 @@ def cargar_usuarios():
         return json.load(f)["usuarios"]
 
 # =============================
-# LOGIN
+# LOGIN 🔥 CORREGIDO FULL
 # =============================
 @app.route("/", methods=["GET", "POST"])
 def login():
 
+    # 🔥 GUARDAR NEXT EN SESSION SI VIENE
     if request.method == "GET":
         next_url = request.args.get("next")
         if next_url:
             session["next"] = next_url
 
+    # 🔥 SI YA ESTÁ LOGEADO
     if "user" in session:
         next_url = session.pop("next", None)
         if next_url:
@@ -95,6 +96,7 @@ def login():
                 session["login_time"] = datetime.utcnow().isoformat()
                 session.permanent = bool(recordar)
 
+                # 🔥 USAR SESSION (NO request.args)
                 next_url = session.pop("next", None)
 
                 if next_url:
@@ -116,7 +118,7 @@ def index():
     return send_from_directory(BASE_DIR, "index.html")
 
 # =============================
-# DETALLE
+# DETALLE 🔥
 # =============================
 @app.route("/detalle.html")
 def detalle():
@@ -135,37 +137,6 @@ def datos():
 
     generar_json()
     return send_file(os.path.join(BASE_DIR, "datos.json"))
-
-# =============================
-# DESCARGAR ARCHIVO 🔥
-# =============================
-@app.route("/descargar")
-def descargar():
-
-    if "user" not in session:
-        return {"error": "no autorizado"}, 403
-
-    url = request.args.get("url")
-
-    if not url:
-        return "URL no válida", 400
-
-    try:
-        r = requests.get(url)
-
-        filename = url.split("/")[-1]
-
-        return Response(
-            r.content,
-            headers={
-                "Content-Disposition": f"attachment; filename={filename}"
-            },
-            content_type=r.headers.get("Content-Type", "application/octet-stream")
-        )
-
-    except Exception as e:
-        print("Error descarga:", e)
-        return "Error al descargar", 500
 
 # =============================
 # CAMBIAR ESTADO
