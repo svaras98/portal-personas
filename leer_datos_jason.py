@@ -14,7 +14,7 @@ SCOPES = [
 ]
 
 # =============================
-# CREDENCIALES (LOCAL / RENDER)
+# CREDENCIALES
 # =============================
 if os.getenv("GOOGLE_CREDENTIALS"):
     creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
@@ -27,14 +27,12 @@ else:
 client = gspread.authorize(CREDS)
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
-
 # =============================
-# FUNCIONES AUXILIARES
+# FUNCIONES
 # =============================
 def calcular_dias_contrato(fecha):
     hoy = datetime.today()
     return (fecha - hoy).days + 1
-
 
 def calcular_dias_cumple(cumple):
     if not cumple:
@@ -51,30 +49,6 @@ def calcular_dias_cumple(cumple):
 
     except:
         return ""
-
-
-def limpiar_link(valor):
-    if not valor:
-        return ""
-
-    valor = str(valor).strip()
-
-    if "drive.google.com" in valor:
-        return valor
-
-    if "HYPERLINK" in valor.upper():
-        try:
-            inicio = valor.find('"') + 1
-            fin = valor.find('"', inicio)
-            link = valor[inicio:fin]
-
-            if "drive.google.com" in link:
-                return link
-        except:
-            return ""
-
-    return ""
-
 
 # =============================
 # GENERAR JSON
@@ -102,11 +76,9 @@ def generar_json():
                 if isinstance(cumple_raw, datetime):
                     cumple = cumple_raw
                 else:
-                    cumple_str = str(cumple_raw).strip()
-
-                    for formato in ["%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d", "%d/%m/%y"]:
+                    for formato in ["%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d"]:
                         try:
-                            cumple = datetime.strptime(cumple_str, formato)
+                            cumple = datetime.strptime(str(cumple_raw), formato)
                             break
                         except:
                             continue
@@ -119,45 +91,43 @@ def generar_json():
         estado = obtener_estado(rut)
 
         if not estado:
-            estado_excel = row.get("ESTADO")
-            estado = estado_excel if estado_excel else "ACTIVO"
+            estado = row.get("ESTADO") or "ACTIVO"
 
         if estado not in ["ACTIVO", "INACTIVO"]:
             estado = "ACTIVO"
 
         # =============================
-        # CONTRATOS
+        # 🔥 LÓGICA CONTRATO (CLAVE)
         # =============================
-        if tipo == "INDEFINIDO":
+        if estado == "INACTIVO":
+            dias = "SIN CONTRATO"
+            fecha_termino = "SIN FECHA"
 
+        elif tipo == "INDEFINIDO":
             dias = "INDEFINIDO"
             fecha_termino = "∞"
 
         else:
-
             try:
                 if fecha_raw:
                     fecha = datetime.strptime(str(fecha_raw), "%d-%m-%Y")
+                    dias_calc = calcular_dias_contrato(fecha)
 
-                    dias_calculados = calcular_dias_contrato(fecha)
-                    fecha_termino = fecha.strftime("%d-%m-%Y")
-
-                    # 🔥 SOLO SI ESTÁ VENCIDO O INACTIVO
-                    if (isinstance(dias_calculados, int) and dias_calculados <= 0) or estado == "INACTIVO":
+                    if dias_calc <= 0:
                         dias = "SIN CONTRATO"
                         fecha_termino = "SIN FECHA"
                         estado = "INACTIVO"
                         guardar_estado(rut, "INACTIVO")
                     else:
-                        dias = dias_calculados
-
+                        dias = dias_calc
+                        fecha_termino = fecha.strftime("%d-%m-%Y")
                 else:
                     dias = ""
-                    fecha_termino = None
+                    fecha_termino = ""
 
             except:
                 dias = ""
-                fecha_termino = None
+                fecha_termino = ""
 
         # =============================
         # OBJETO FINAL
@@ -191,8 +161,5 @@ def generar_json():
     print("✅ datos.json generado correctamente")
 
 
-# =============================
-# MAIN
-# =============================
 if __name__ == "__main__":
     generar_json()
