@@ -582,15 +582,22 @@ if(panel.style.display==="block"){
 }
 
 
-document.getElementById("buscador").addEventListener("keyup",e=>{
+document.getElementById("buscador").addEventListener("keyup", e => {
 
     let texto = e.target.value.toLowerCase();
 
-   datosActuales = datosActuales.filter(p =>
-       p.nombre.toLowerCase().includes(texto)
-   );
+    // 🔥 si está vacío → vuelve al filtro actual completo
+    if(texto === ""){
+        mostrar(datosActuales);
+        return;
+    }
 
-    mostrar(datosActuales);
+    // 🔥 filtra sobre la vista actual SIN destruirla
+    let filtrados = datosActuales.filter(p =>
+        p.nombre.toLowerCase().includes(texto)
+    );
+
+    mostrar(filtrados);
 
 });
 
