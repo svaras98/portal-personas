@@ -250,8 +250,8 @@ let dia = String(hoy.getDate()).padStart(2,"0");
 return año+"-"+mes+"-"+dia;
 }
 
-let datosGlobal=[];
-let datosGlobal=[]
+let datosGlobal = [];
+let datosActuales = [];
 let ordenAZ=true;
 let ordenVenceMayor=true;
 let intervaloVibracion=null;
@@ -562,20 +562,18 @@ function toggleAvisos(){
 let panel=document.getElementById("panelAvisos");
 
 if(panel.style.display==="block"){
-
-panel.style.display="none";
-
+    panel.style.display="none";
 }else{
+    panel.style.display="block";
 
-panel.style.display="block";
+    clearInterval(intervaloVibracion);
 
-clearInterval(intervaloVibracion);
+    document.getElementById("contadorAvisos").style.display="none";
 
-document.getElementById("contadorAvisos").style.display="none";
+    localStorage.setItem("avisos_vistos_"+fechaHoy,"true");
 
-localStorage.setItem("avisos_vistos_"+fechaHoy,"true");
-
-avisosVistos=true;
+    avisosVistos=true;
+}
 
 }
 
