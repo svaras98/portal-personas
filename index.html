@@ -230,6 +230,7 @@ window.location.href="/logout";
 
 function obtenerNumeroSeguro(valor){
 if(valor==="INDEFINIDO") return 999999;
+if(valor==="SIN CONTRATO") return -999999;
 
 let n = parseInt(valor);
 
