@@ -59,14 +59,11 @@ def limpiar_link(valor):
 
     valor = str(valor).strip()
 
-    # 🔥 Caso 1: link directo normal
     if "drive.google.com" in valor:
         return valor
 
-    # 🔥 Caso 2: fórmula tipo HYPERLINK
     if "HYPERLINK" in valor.upper():
         try:
-            # extrae el link entre comillas
             inicio = valor.find('"') + 1
             fin = valor.find('"', inicio)
             link = valor[inicio:fin]
@@ -77,6 +74,7 @@ def limpiar_link(valor):
             return ""
 
     return ""
+
 
 # =============================
 # GENERAR JSON
@@ -95,7 +93,9 @@ def generar_json():
         cumple_raw = row.get("CUMPLEAÑOS")
         fecha_raw = row.get("FECHA DE CONTRATO")
 
-        # PARSEO DE FECHA DE CUMPLE
+        # =============================
+        # CUMPLEAÑOS
+        # =============================
         cumple = None
         if cumple_raw:
             try:
@@ -113,6 +113,9 @@ def generar_json():
             except:
                 cumple = None
 
+        # =============================
+        # ESTADO
+        # =============================
         estado = obtener_estado(rut)
 
         if not estado:
@@ -122,6 +125,9 @@ def generar_json():
         if estado not in ["ACTIVO", "INACTIVO"]:
             estado = "ACTIVO"
 
+        # =============================
+        # CONTRATOS
+        # =============================
         if tipo == "INDEFINIDO":
 
             dias = "INDEFINIDO"
@@ -133,12 +139,18 @@ def generar_json():
                 if fecha_raw:
                     fecha = datetime.strptime(str(fecha_raw), "%d-%m-%Y")
 
-                    dias = calcular_dias_contrato(fecha)
+                    dias_calculados = calcular_dias_contrato(fecha)
                     fecha_termino = fecha.strftime("%d-%m-%Y")
 
-                    if isinstance(dias, int) and dias <= 0:
+                    # 🔥 SOLO SI ESTÁ VENCIDO O INACTIVO
+                    if (isinstance(dias_calculados, int) and dias_calculados <= 0) or estado == "INACTIVO":
+                        dias = "SIN CONTRATO"
+                        fecha_termino = "SIN FECHA"
                         estado = "INACTIVO"
                         guardar_estado(rut, "INACTIVO")
+                    else:
+                        dias = dias_calculados
+
                 else:
                     dias = ""
                     fecha_termino = None
@@ -147,6 +159,9 @@ def generar_json():
                 dias = ""
                 fecha_termino = None
 
+        # =============================
+        # OBJETO FINAL
+        # =============================
         persona = {
             "id": i,
             "nombre": nombre,
@@ -159,7 +174,7 @@ def generar_json():
             "cumple": cumple.strftime("%d/%m/%Y") if cumple else "",
             "dias_cumple": calcular_dias_cumple(cumple),
 
-           "pdfs": {
+            "pdfs": {
                 "ci": str(row.get("PDF CI", "")).strip(),
                 "contrato": str(row.get("PDF CT", "")).strip(),
                 "psi": str(row.get("PDF PSI", "")).strip(),
