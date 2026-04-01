@@ -133,7 +133,7 @@ def datos():
     return send_file(os.path.join(BASE_DIR, "datos.json"))
 
 # =============================
-# CAMBIAR ESTADO
+# CAMBIAR ESTADO 🔥
 # =============================
 @app.route("/desactivar/<rut>", methods=["POST"])
 def desactivar(rut):
@@ -152,17 +152,17 @@ def desactivar(rut):
         for i, row in enumerate(datos_sheet, start=2):
             rut_sheet = str(row.get("CARNET", "")).strip()
 
-           if rut_sheet == rut:
+            if rut_sheet == rut:
 
-    # 🔥 actualizar estado
-    sheet.update_cell(i, 15, nuevo_estado)
+                # ✅ actualizar estado
+                sheet.update_cell(i, 15, nuevo_estado)
 
-    # 🔥 SI SE DESACTIVA → CAMBIAR CONTRATO
-    if nuevo_estado == "INACTIVO":
-        sheet.update_cell(i, 1, "SIN CONTRATO")   # Columna A
-        sheet.update_cell(i, 14, "SIN FECHA")     # Columna N
+                # 🔥 SI SE DESACTIVA → CAMBIAR CONTRATO
+                if nuevo_estado == "INACTIVO":
+                    sheet.update_cell(i, 1, "SIN CONTRATO")   # Columna A
+                    sheet.update_cell(i, 14, "SIN FECHA")     # Columna N
 
-    break
+                break
 
         generar_json()
 
@@ -181,7 +181,7 @@ def logout():
     return redirect("/")
 
 # =============================
-# AUTO PROCESO 🔥 (ARREGLADO)
+# AUTO PROCESO
 # =============================
 @app.route("/auto-proceso")
 def auto_proceso():
