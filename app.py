@@ -153,8 +153,16 @@ def desactivar(rut):
             rut_sheet = str(row.get("CARNET", "")).strip()
 
             if rut_sheet == rut:
-                sheet.update_cell(i, 15, nuevo_estado)
-                break
+
+    # 🔥 actualizar estado
+    sheet.update_cell(i, 15, nuevo_estado)
+
+    # 🔥 SI SE DESACTIVA → CAMBIAR CONTRATO
+    if nuevo_estado == "INACTIVO":
+        sheet.update_cell(i, 1, "SIN CONTRATO")   # Columna A
+        sheet.update_cell(i, 14, "SIN FECHA")     # Columna N
+
+    break
 
         generar_json()
 
