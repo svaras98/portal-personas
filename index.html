@@ -305,16 +305,20 @@ document.getElementById("cumples").innerText="🎂 "+cumples;
 }
 
 function verActivos(){
+    document.getElementById("buscador").value = "";
     datosActuales = datosGlobal.filter(p => p.estado !== "INACTIVO");
     mostrar(datosActuales);
 }
 
 function verInactivos(){
-    datosActuales = datosGlobal.filter(p => p.estado === "INACTIVO")
+    document.getElementById("buscador").value = "";
+    datosActuales = datosGlobal.filter(p => p.estado === "INACTIVO");
     mostrar(datosActuales);
 }
 
 function verCumples(){
+    document.getElementById("buscador").value = "";
+
     datosActuales = datosGlobal.filter(p => {
         let dias = parseInt(p.dias_cumple);
         return !isNaN(dias) && dias >= 0 && dias <= 10;
@@ -582,9 +586,9 @@ document.getElementById("buscador").addEventListener("keyup",e=>{
 
     let texto = e.target.value.toLowerCase();
 
-    datosActuales = datosGlobal.filter(p =>
-        p.nombre.toLowerCase().includes(texto)
-    );
+   datosActuales = datosActuales.filter(p =>
+       p.nombre.toLowerCase().includes(texto)
+   );
 
     mostrar(datosActuales);
 
