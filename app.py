@@ -152,7 +152,7 @@ def desactivar(rut):
         for i, row in enumerate(datos_sheet, start=2):
             rut_sheet = str(row.get("CARNET", "")).strip()
 
-            if rut_sheet == rut:
+           if rut_sheet == rut:
 
     # 🔥 actualizar estado
     sheet.update_cell(i, 15, nuevo_estado)
