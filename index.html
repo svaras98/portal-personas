@@ -393,6 +393,11 @@ data.forEach(p=>{
 
 let color="#2ecc71";
 let diasMostrar = p.dias ?? "";
+// 🔥 NUEVO: SIN CONTRATO
+if(p.dias === "SIN CONTRATO"){
+    color = "#e74c3c";
+    diasMostrar = "❌ SIN CONTRATO";
+}
 
 // 🔥 DEFINIR ESTO (TE FALTABA)
 let diasCumple = parseInt(p.dias_cumple);
