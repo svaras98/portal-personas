@@ -579,17 +579,16 @@ avisosVistos=true;
 
 }
 
-}
 
 document.getElementById("buscador").addEventListener("keyup",e=>{
 
-let texto=e.target.value.toLowerCase();
+    let texto = e.target.value.toLowerCase();
 
-let filtrados=datosGlobal.filter(p=>
-p.nombre.toLowerCase().includes(texto)
-);
+    datosActuales = datosGlobal.filter(p =>
+        p.nombre.toLowerCase().includes(texto)
+    );
 
-mostrar(filtrados);
+    mostrar(datosActuales);
 
 });
 
